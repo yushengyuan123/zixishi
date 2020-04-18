@@ -1,0 +1,36 @@
+@function rpx($value) {
+  @return $value * 1rpx;
+}
+
+//垂直居中
+@mixin vertical-center {
+  display: flex;
+  align-items: center;
+}
+
+//宽对水平居中
+@mixin alignCenter($width) {
+  width: $width;
+  margin: auto;
+}
+
+//行内块级
+@mixin inline {
+  display: inline-block;
+  vertical-align: top;
+}
+
+//背景颜色
+@mixin backgroundImage($path, $size) {
+  background-image: url($path);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: $size;
+}
+
+//img标签行为
+@mixin imgStyle($height, $width) {
+  display: block;
+  height: $height;
+  width: $width;
+}

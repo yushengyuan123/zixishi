@@ -1,0 +1,135 @@
+<style lang="scss" scoped>
+  @import "../utils/css/shareCss";
+
+  .index-title {
+    @include vertical-center;
+    height: rpx(150);
+    font: {
+      size: rpx(68);
+    };
+  }
+
+  .index-item {
+    height: rpx(500);
+
+    .item-card {
+      @include alignCenter(90%);
+      height: rpx(310);
+      background:linear-gradient(225deg,rgba(255,255,255,1) 0%,rgba(237,240,244,1) 100%);
+      box-shadow:0px 6px 6px rgba(10,22,70,0.1);
+      border-radius: 10px;
+      font: {
+        size: 0;
+      };
+
+      .left-container{
+        @include inline;
+        height: 100%;
+        width: 60%;
+
+        .card-title {
+          $height: rpx(119);
+          font: {
+            size: rpx(44);
+            weight: bold;
+          };
+          height: $height;
+          line-height: rpx(127);
+          margin-left: rpx(45);
+        }
+
+        .card-content {
+          $height: rpx(150);
+          font-size: rpx(27);
+          height: $height;
+          margin-left: rpx(65);
+          color: rgba(32,32,39,0.48);
+        }
+      }
+
+      .right-container {
+        @include inline;
+        height: 100%;
+        width: 40%;
+
+        image {
+          @include imgStyle(85px, 135px);
+          padding: rpx(52) 0 0 0;
+        }
+      }
+
+
+    }
+  }
+
+</style>
+<template>
+  <view>
+    <view class="index-title">自习室</view>
+    <view class="index-item">
+      <view class="item-card" wx:for="{{provinceList}}"
+            wx:key="{{index}}"
+            data-classify="{{item}}"
+            data-index='{{index}}'>
+        <view class="left-container">
+          <view class="card-title">创建自习室</view>
+          <view class="card-content">在这里你可以创建自己的 自习室，邀请你的朋友和 你一起自习</view>
+        </view>
+        <view class="right-container">
+          <image src="../images/build.png" alt="nihao"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import { test } from '../utils/shared/test';
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '流动自习室'
+    };
+
+    components = {};
+
+    mixins = [];
+
+    watch = {};
+
+    events = {};
+
+    data = {
+      cardList: [
+        {
+          name: '创建自习室',
+          description: '在这里你可以创建自己的 自习室，邀请你的朋友和 你一起自习。',
+          imageURL: '../images/build.png',
+          id: 1
+        },
+        {
+          name: '加入自习室',
+          description: '在这里你可以通过准确输 入加入码进入你的朋友的 自习室。',
+          imageURL: '../images/build.png',
+          id: 2
+        },
+        {
+          name: '附近的自习室',
+          description: '在这里你可以看到在你附 近的自习室并选择是否加 入他们。',
+          imageURL: '../images/build.png',
+          id: 3
+        },
+      ]
+    };
+
+    computed = {};
+
+    onReady() {
+      test();
+    }
+
+    methods = {};
+  }
+  ;
+</script>
