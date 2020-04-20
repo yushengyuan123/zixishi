@@ -1,17 +1,16 @@
 <style lang="scss" scoped>
   @import "../utils/css/shareCss";
 
+  .index-con {
+    height: 100vh;
+    background:rgba(245,245,245,1);
+  }
+
   .index-title {
-    @include vertical-center;
-    height: rpx(150);
-    font: {
-      size: rpx(68);
-    };
+    @include title;
   }
 
   .index-item {
-    background-color: #ffffff;
-
     .item-card {
       @include alignCenter(90%);
       height: rpx(310);
@@ -73,7 +72,7 @@
 
 </style>
 <template>
-  <view>
+  <view class="index-con">
     <view class="index-title">自习室</view>
     <view class="index-item">
       <view class="item-card"
@@ -103,7 +102,6 @@
 <script>
   import wepy from 'wepy';
   import navigator from '../components/navigator'
-  import { test } from '../utils/shared/test';
 
   export default class Index extends wepy.page {
     config = {
@@ -148,7 +146,8 @@
     computed = {};
 
     onReady() {
-      test();
+      console.log('nihoa')
+      console.log(wepy.page)
     }
 
     methods = {

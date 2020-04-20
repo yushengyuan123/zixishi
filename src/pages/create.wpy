@@ -2,24 +2,50 @@
   @import "../utils/css/shareCss";
 
   .create-container {
-    height: 100px;
-    background-color: red;
+    height: 100vh;
   }
 
+  .title {
+    @include title;
+    padding-bottom: rpx(20);
+  }
 
+  .input-con {
+    @include alignCenter(80%);
+    height: rpx(100);
+    margin-top: rpx(30);
 
+    input {
+      height: 100%;
+      border:1px solid rgba(225,228,232,1);
+      border-radius:4px;
+    }
+  }
 
+  .create-btn {
+    @include btn;
+    position: absolute;
+    bottom: rpx(100);
+    left: 10%;
+    border-radius: 30px 30px 30px 30px;
+  }
 
 </style>
 <template>
   <view class="create-container">
-
+    <view class="title">创建自习室</view>
+    <view class="input-con">
+      <input type="text" placeholder="自习室名称">
+    </view>
+    <view class="input-con">
+      <input type="text" placeholder="自习室简介">
+    </view>
+    <view class="create-btn">创建</view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy';
-  import { test } from '../utils/shared/test';
 
   export default class navigator extends wepy.page {
     components = {};
@@ -40,6 +66,5 @@
     }
 
     methods = {};
-  }
-  ;
+  };
 </script>

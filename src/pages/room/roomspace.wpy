@@ -1,0 +1,35 @@
+<style lang="scss" scoped>
+  @import "../utils/css/shareCss";
+
+
+</style>
+<template>
+  <view class="room-container">
+    你好吗
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class roomspace extends wepy.page {
+    components = {};
+
+    mixins = [];
+
+    watch = {};
+
+    events = {};
+
+    data = {
+
+    };
+
+    computed = {};
+
+    onReady() {
+    }
+
+    methods = {};
+  }
+</script>

@@ -50,7 +50,6 @@
 
 <script>
   import wepy from 'wepy';
-  import { test } from '../utils/shared/test';
 
   export default class navigator extends wepy.page {
     components = {};

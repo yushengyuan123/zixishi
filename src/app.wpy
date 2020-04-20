@@ -17,8 +17,9 @@
   export default class extends wepy.app {
     config = {
       pages: [
+        'pages/roomspace',
         'pages/index',
-        'pages/create'
+        'pages/create',
       ],
       window: {
         backgroundTextStyle: 'light',
@@ -32,22 +33,22 @@
         "color": "#B3B3B3",
         "selectedColor": "#64C8BC",
         "borderStyle": "white",
-        "backgroundColor": "white",
+        "backgroundColor": "#ffffff",
         "list": [
           {
             "selectedIconPath": "./images/navigator_zixishi.png",
-            "iconPath": "./images/navigator_zixishi.png",
+            "iconPath": "./images/navigator_zixishi_negative.png",
             "pagePath": "pages/index",
             "text": "自习室"
           },
           {
-            "selectedIconPath": "./images/statics_nagative.png",
+            "selectedIconPath": "./images/statics_choose.png",
             "iconPath": "./images/statics_nagative.png",
             "pagePath": "pages/index",
             "text": "数据统计"
           },
           {
-            "selectedIconPath": "./images/shudong_nagative.png",
+            "selectedIconPath": "./images/shudong_choose.png",
             "iconPath": "./images/shudong_nagative.png",
             "pagePath": "pages/index",
             "text": "树洞"

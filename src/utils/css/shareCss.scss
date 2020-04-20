@@ -34,3 +34,35 @@
   height: $height;
   width: $width;
 }
+
+//绝对定位
+@mixin absolute($height, $width) {
+  height: $height;
+  width: $width;
+  position: absolute;
+  left: calc(50% - #{$width/2});
+}
+
+//标题
+@mixin title {
+  height: rpx(76);
+  padding: rpx(30) 0 0 rpx(30);
+  font: {
+    size: rpx(68);
+    weight: bold;
+  };
+}
+
+//按钮
+@mixin btn {
+  $height: rpx(95);
+  width: 80%;
+  height: $height;
+  line-height: $height;
+  text-align: center;
+  color: white;
+  background-color: #64C8BC;
+  border-radius: 30px 30px 30px 30px;
+  font-size: 20px;
+}
+
