@@ -18,6 +18,7 @@
     config = {
       pages: [
         'pages/index',
+        'pages/create'
       ],
       window: {
         backgroundTextStyle: 'light',
@@ -26,6 +27,38 @@
         navigationBarTextStyle: 'black'
       },
       permission: {
+      },
+      tabBar: {
+        "color": "#B3B3B3",
+        "selectedColor": "#64C8BC",
+        "borderStyle": "white",
+        "backgroundColor": "white",
+        "list": [
+          {
+            "selectedIconPath": "./images/navigator_zixishi.png",
+            "iconPath": "./images/navigator_zixishi.png",
+            "pagePath": "pages/index",
+            "text": "自习室"
+          },
+          {
+            "selectedIconPath": "./images/statics_nagative.png",
+            "iconPath": "./images/statics_nagative.png",
+            "pagePath": "pages/index",
+            "text": "数据统计"
+          },
+          {
+            "selectedIconPath": "./images/shudong_nagative.png",
+            "iconPath": "./images/shudong_nagative.png",
+            "pagePath": "pages/index",
+            "text": "树洞"
+          },
+          {
+            "selectedIconPath": "./images/my_nagative.png",
+            "iconPath": "./images/my_nagative.png",
+            "pagePath": "pages/index",
+            "text": "我的"
+          },
+        ]
       }
     }
   }

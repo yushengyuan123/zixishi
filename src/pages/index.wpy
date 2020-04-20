@@ -10,11 +10,12 @@
   }
 
   .index-item {
-    height: rpx(500);
+    background-color: #ffffff;
 
     .item-card {
       @include alignCenter(90%);
       height: rpx(310);
+      margin-top: rpx(46);
       background:linear-gradient(225deg,rgba(255,255,255,1) 0%,rgba(237,240,244,1) 100%);
       box-shadow:0px 6px 6px rgba(10,22,70,0.1);
       border-radius: 10px;
@@ -40,7 +41,7 @@
 
         .card-content {
           $height: rpx(150);
-          font-size: rpx(27);
+          font-size: rpx(28);
           height: $height;
           margin-left: rpx(65);
           color: rgba(32,32,39,0.48);
@@ -52,9 +53,17 @@
         height: 100%;
         width: 40%;
 
-        image {
+        .image1 {
           @include imgStyle(85px, 135px);
           padding: rpx(52) 0 0 0;
+        }
+        .image2 {
+          @include imgStyle(108px, 80px);
+          padding: rpx(52) 0 0 rpx(70);
+        }
+        .image3 {
+          @include imgStyle(96px, 115px);
+          padding: rpx(52) 0 0 rpx(30);
         }
       }
 
@@ -67,16 +76,24 @@
   <view>
     <view class="index-title">自习室</view>
     <view class="index-item">
-      <view class="item-card" wx:for="{{provinceList}}"
-            wx:key="{{index}}"
+      <view class="item-card"
+            wx:for="{{cardList}}"
+            wx:key="{{id}}"
             data-classify="{{item}}"
-            data-index='{{index}}'>
+            data-index='{{id}}'
+            @tap="go"
+      >
         <view class="left-container">
-          <view class="card-title">创建自习室</view>
-          <view class="card-content">在这里你可以创建自己的 自习室，邀请你的朋友和 你一起自习</view>
+          <view class="card-title">{{item.name}}</view>
+          <view class="card-content">{{item.description}}</view>
         </view>
         <view class="right-container">
-          <image src="../images/build.png" alt="nihao"></image>
+          <image
+            src="{{item.imageURL}}"
+            alt="{{item.id}}"
+            class="{{'image' + item.id}}"
+          >
+          </image>
         </view>
       </view>
     </view>
@@ -85,6 +102,7 @@
 
 <script>
   import wepy from 'wepy';
+  import navigator from '../components/navigator'
   import { test } from '../utils/shared/test';
 
   export default class Index extends wepy.page {
@@ -92,13 +110,17 @@
       navigationBarTitleText: '流动自习室'
     };
 
-    components = {};
+    components = {
+      navigator: navigator
+    };
 
     mixins = [];
 
     watch = {};
 
-    events = {};
+    events = {
+
+    };
 
     data = {
       cardList: [
@@ -111,13 +133,13 @@
         {
           name: '加入自习室',
           description: '在这里你可以通过准确输 入加入码进入你的朋友的 自习室。',
-          imageURL: '../images/build.png',
+          imageURL: '../images/join.png',
           id: 2
         },
         {
           name: '附近的自习室',
           description: '在这里你可以看到在你附 近的自习室并选择是否加 入他们。',
-          imageURL: '../images/build.png',
+          imageURL: '../images/near.png',
           id: 3
         },
       ]
@@ -129,7 +151,14 @@
       test();
     }
 
-    methods = {};
+    methods = {
+      go() {
+        console.log('nihao')
+        wepy.navigateTo({
+          url: '/pages/create'
+        })
+      }
+    };
   }
   ;
 </script>

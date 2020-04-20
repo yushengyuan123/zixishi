@@ -1,0 +1,45 @@
+<style lang="scss" scoped>
+  @import "../../utils/css/shareCss";
+
+  .create-container {
+    height: 100px;
+    background-color: red;
+  }
+
+
+
+
+
+</style>
+<template>
+  <view class="create-container">
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import { test } from '../utils/shared/test';
+
+  export default class navigator extends wepy.page {
+    components = {};
+
+    mixins = [];
+
+    watch = {};
+
+    events = {};
+
+    data = {
+
+    };
+
+    computed = {};
+
+    onReady() {
+    }
+
+    methods = {};
+  }
+  ;
+</script>
