@@ -43,6 +43,14 @@
   left: calc(50% - #{$width/2});
 }
 
+//fixed定位
+@mixin fixed($height, $width) {
+  height: $height;
+  width: $width;
+  position: fixed;
+  left: calc(50% - #{$width/2});
+}
+
 //标题
 @mixin title {
   height: rpx(76);

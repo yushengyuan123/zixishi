@@ -11,14 +11,26 @@
   }
 
   .input-con {
+    position: relative;
     @include alignCenter(80%);
     height: rpx(100);
     margin-top: rpx(30);
 
     input {
-      height: 100%;
-      border:1px solid rgba(225,228,232,1);
-      border-radius:4px;
+      height: rpx(100);
+      width: 100%;
+      border: 1px solid rgba(225, 228, 232, 1);
+      padding-left: rpx(50);
+      border-radius: 4px;
+    }
+
+    view {
+      position: absolute;
+      height: rpx(50);
+      margin: rpx(25) 0 rpx(25) rpx(50);
+      color: #8A94A6;
+      line-height: rpx(50);
+      background-color: white;
     }
   }
 
@@ -30,41 +42,144 @@
     border-radius: 30px 30px 30px 30px;
   }
 
+  .input-label {
+    position: relative;
+    width: 80%;
+    margin: auto;
+
+    input {
+      position: absolute;
+      top: 0;
+      height: rpx(100);
+      width: 100%;
+      border: 1px solid rgba(225, 228, 232, 1);
+      border-radius: 4px;
+    }
+  }
+
 </style>
 <template>
   <view class="create-container">
     <view class="title">创建自习室</view>
     <view class="input-con">
-      <input type="text" placeholder="自习室名称">
+      <view
+        id="label"
+        animation="{{inputList.animation_name}}"
+      >自习室名称
+      </view>
+      <input
+        type="text"
+        bindinput="change"
+        @focus="highLight(1)"
+        @blur="recover(1)"
+        style="{{choose === 1 ?'border: 1px solid #64C8BC' : 'border:1px solid rgba(225,228,232,1);'}}"
+      >
     </view>
     <view class="input-con">
-      <input type="text" placeholder="自习室简介">
+      <view
+        id="label"
+        animation="{{inputList.animation_introduce}}"
+      >自习室简介
+      </view>
+      <input
+        type="text"
+        value="{{values.introduce}}"
+        data-modal='values.introduce'
+        @focus="highLight(2)"
+        @blur="recover(2)"
+        style="{{choose === 2 ? 'border: 1px solid #64C8BC' : 'border:1px solid rgba(225,228,232,1);'}}"
+      >
     </view>
     <view class="create-btn">创建</view>
   </view>
 </template>
 
 <script>
-  import wepy from 'wepy';
+    import wepy from 'wepy';
 
-  export default class navigator extends wepy.page {
-    components = {};
+    export default class navigator extends wepy.page {
+        components = {};
 
-    mixins = [];
+        mixins = [];
 
-    watch = {};
+        watch = {};
 
-    events = {};
+        events = {};
 
-    data = {
+        data = {
+            inputList: {
+                animation_name: null,
+                animation_introduce: null
+            },
+            name:'',
+            values: {
+                name: '',
+                introduce: ''
+            },
+            choose: null
+        };
 
+        computed = {};
+
+        onReady() {
+
+        }
+
+        methods = {
+            change(value) {
+              console.log(value.detail.value)
+            },
+            highLight(input) {
+                if (input == 1) {
+                    this.choose = 1
+                    this.methods.transform.call(this, 'name')
+                } else {
+                    this.choose = 2
+                    this.methods.transform.call(this)
+                }
+            },
+
+            recover(input) {
+                if (input == 1) {
+                    this.choose = null
+                    console.log(this.name)
+                    if (!!!this.values.name) {
+                        this.methods.leave.call(this, 'name')
+                    }
+                } else {
+                    if (!!!this.values.introduce) {
+                        this.methods.leave.call(this)
+                    }
+                }
+            },
+
+            transform(which) {
+                if (which === 'name') {
+                    this.inputList.animation_name = wx.createAnimation({
+                        duration: 100
+                    })
+                    this.inputList.animation_name.translate(-15, -23).step()
+                } else {
+                    this.inputList.animation_introduce = wx.createAnimation({
+                        duration: 100
+                    })
+                    this.inputList.animation_introduce.translate(-15, -23).step()
+                }
+            },
+
+            leave(which) {
+                if (which === 'name') {
+                    this.inputList.animation_name = wx.createAnimation({
+                        duration: 100
+                    })
+                    this.inputList.animation_name.translate(0, 0).step()
+                } else {
+                    this.inputList.animation_introduce = wx.createAnimation({
+                        duration: 100
+                    })
+                    this.inputList.animation_introduce.translate(0, 0).step()
+                }
+            }
+        };
     };
-
-    computed = {};
-
-    onReady() {
-    }
-
-    methods = {};
-  };
 </script>

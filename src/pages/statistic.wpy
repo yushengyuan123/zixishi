@@ -1,0 +1,238 @@
+<style lang="scss" scoped>
+  @import "../utils/css/shareCss";
+
+  .statistic-con {
+    height: 100vh;
+    background: rgba(245, 245, 245, 1);
+  }
+
+  .top-con {
+    height: 112px;
+    padding-top: 10px;
+    text-align: center;
+
+    .average {
+      @include inline;
+      height: 100%;
+      width: 43%;
+      background-color: white;
+      border-radius: 6px;
+      text-align: left;
+
+      .average-title {
+        height: 16px;
+        padding: 16px 0 0 16px;
+        color: rgba(138, 148, 166, 0.64);
+        font-size: 12px;
+      }
+
+      .time-con {
+        height: 40px;
+        font-weight: bold;
+        font-size: 23px;
+        line-height: 40px;
+        color: rgba(138, 148, 166, 1);
+        padding: 0 0 0 16px;
+      }
+
+      .rank {
+        height: 22px;
+        padding: 0 0 0 16px;
+
+        .up {
+          @include inline;
+          margin: 2px 8px 2px 0;
+          height: 18px;
+          width: 18px;
+        }
+
+        view {
+          @include inline;
+          height: 100%;
+          color: #64C8BC;
+          font: {
+            size: 15px;
+          };
+        }
+
+        .rank-png {
+          @include inline;
+          float: right;
+          margin: 4px 10px 4px 0;
+          height: 14px;
+          width: 19px;
+        }
+      }
+    }
+  }
+
+  .chart-con {
+    @include alignCenter(90%);
+    margin-top: 23px;
+    border-radius: 6px;
+    background-color: white;
+
+    .time-con {
+      height: 20%;
+    }
+  }
+
+  .total-con {
+    width: 100%;
+    text-align: center;
+
+    .total-time {
+      height: 48px;
+      color: #64C8BC;
+      font: {
+        size: 30px;
+        weight: bold;
+      };
+    }
+
+    .total-title {
+
+    }
+
+  }
+
+  .box {
+    width: 100%;
+    height: 360px;
+  }
+
+
+</style>
+<template>
+  <view class="statistic-con">
+    <view class="top-con">
+      <view class="average" style="margin-right: 2%">
+        <view class="average-title">今日时长</view>
+        <view class="time-con">600分钟</view>
+        <view class="rank">
+          <image src="../images/up.png" class="up"></image>
+          <view>8.64%</view>
+          <image src="../images/rank.png" class="rank-png"></image>
+        </view>
+      </view>
+
+      <view class="average" style="margin-left: 2%">
+        <view class="average-title">今日时长</view>
+        <view class="time-con">600分钟</view>
+        <view class="rank">
+          <image src="../images/up.png" class="up"></image>
+          <view>8.64%</view>
+          <image src="../images/rank.png" class="rank-png"></image>
+        </view>
+      </view>
+
+      <view class="chart-con">
+        <view class="time-con">
+          <timePicker></timePicker>
+        </view>
+        <view class="total-con">
+          <view class="total-time">2400分钟</view>
+          <view class="total-title">自习时长</view>
+        </view>
+        <view class="box">
+          <ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}"></ec-canvas>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import * as echarts from '../utils/ec-canvas/echarts';
+    import timePicker from '../components/timePicker'
+
+    let chart = null
+
+    export default class statistic extends wepy.page {
+        config = {
+            navigationBarTitleText: '数据统计',
+            usingComponents: {
+                'ec-canvas': "../utils/ec-canvas/ec-canvas"
+            }
+        };
+
+        components = {
+            timePicker: timePicker
+        };
+
+        mixins = [];
+
+        watch = {};
+
+        events = {};
+
+        data = {
+            ec: {
+                onInit: this.initChart
+            }
+        };
+
+        computed = {};
+
+        onReady() {
+
+        }
+
+        initChart(canvas, width, height, dpr) {
+            chart = echarts.init(canvas, null, {
+                width: width,
+                height: height,
+                devicePixelRatio: dpr // new
+            });
+            canvas.setChart(chart);
+
+            var option = {
+                color: ['#3398DB'],
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        name: '直接访问',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: [10, 52, 200, 334, 390, 330, 220]
+                    }
+                ]
+            };
+
+            chart.setOption(option);
+            return chart;
+        }
+
+        methods = {
+            test() {
+                return 'caonima'
+            },
+        };
+    };
+</script>

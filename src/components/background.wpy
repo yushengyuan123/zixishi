@@ -1,0 +1,128 @@
+<style lang="scss" scoped>
+  @import "../utils/css/shareCss";
+
+  .global-shadow {
+    @include absolute(100%, 100%);
+    background: rgba(32, 32, 39, 0.12);
+  }
+
+  .background-container {
+    @include fixed(auto, 207px);
+    top: 30%;
+    border-radius: 10px;
+    background-color: white;
+    z-index: 100;
+
+    view {
+      position: relative;
+      height: 49px;
+      width: 100%;
+      text-align: center;
+      line-height: 49px;
+      font: {
+        size: 18px;
+      };
+      color: #202027;
+
+      .user-bg {
+        position: absolute;
+        display: block;
+        height: 100%;
+        opacity: 0.3;
+        width: 100%;
+        z-index: -1;
+      }
+
+      .lock {
+        @include absolute(20px, 20px);
+        top: calc(50% - 10px);
+
+      }
+    }
+  }
+
+</style>
+<template>
+  <view class="global-shadow">
+    <view class="background-container">
+      <view
+        class="background-list"
+        wx:for="{{bg_list}}"
+        wx:key="{{id}}"
+        data-classify="{{item}}"
+        data-index='{{item.id}}'
+      >
+        <image
+          src="{{item.url}}"
+          alt="item.id"
+          class="user-bg"
+        >
+        </image>
+        <image
+          src="../images/lock.png"
+          alt="lock"
+          class="lock"
+        >
+        </image>
+        背景{{item.id}}<span style="color: #49958C">{{item.id === choose? '(当前使用)': ''}}</span>
+      </view>
+      <view>
+        <image
+          src="../images/lock.png"
+          alt="lock"
+          class="lock"
+        >
+        </image>
+        自定义
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+
+    export default class background extends wepy.page {
+        components = {};
+
+        mixins = [];
+
+        watch = {};
+
+        events = {};
+
+        data = {
+            choose: 1,
+            bg_list: [
+                {
+                    url: '../images/bg4.png',
+                    id: 1,
+                    isLock: false
+                },
+                {
+                    url: '../images/bg2.png',
+                    id: 2,
+                    isLock: false
+                },
+                {
+                    url: '../images/bg3.png',
+                    id: 3,
+                    isLock: false
+                },
+                {
+                    url: '../images/bg1.png',
+                    id: 4,
+                    isLock: false
+                },
+            ]
+        };
+
+        computed = {};
+
+        onReady() {
+        }
+
+        methods = {};
+    }
+    ;
+</script>
