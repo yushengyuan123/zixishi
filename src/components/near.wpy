@@ -1,0 +1,119 @@
+<style lang="scss" scoped>
+  @import "../utils/css/shareCss";
+
+  .near-container {
+    @include absolute(420px, 80%);
+    top: 30%;
+    left: 10%;
+    background-color: white;
+    border-radius:16px;
+
+    .room-list {
+      position:  relative;
+      width: 100%;
+      border:1px solid rgba(225,228,232,1);
+      padding: 10px 0 10px 0;
+
+      .arrow {
+        position: absolute;
+        height: 17px;
+        width: 17px;
+        right: 21px;
+        top: calc(50% - 8.5px);
+      }
+
+      .room-name {
+        margin-left: 14px;
+        font-size: 18px;
+        padding: 1px 0 1px 0;
+      }
+
+      .room-introduce {
+        margin-left: 14px;
+        color: #202027;
+        padding: 1px 40px 5px 0;
+      }
+
+      .room-people {
+        display: inline;
+        width: auto;
+        border: 1px solid #64C8BC;
+        color: #64C8BC;
+        font-size: 14px;
+        padding: 0px 8px 0px 8px;
+        margin-left: 14px;
+      }
+    }
+  }
+
+
+</style>
+<template>
+  <shadow>
+    <view class="near-container" slot="inner">
+      <view>
+        <view
+          class="room-list"
+          wx:for="{{roomList}}"
+          wx:key="{{id}}"
+          data-classify="{{item}}"
+          data-index='{{item.id}}'
+        >
+          <view class="room-name">{{item.name}}</view>
+          <view class="room-introduce">{{item.introduce}}</view>
+          <view class="room-people">{{item.number}}人</view>
+          <image class="arrow" src="../images/direction.png"></image>
+        </view>
+      </view>
+    </view>
+  </shadow>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import shadow from './shadow'
+
+  export default class near extends wepy.page {
+    components = {
+      shadow: shadow
+    };
+
+    mixins = [];
+
+    watch = {};
+
+    events = {};
+
+    data = {
+      roomList: [
+        {
+          id: 1,
+          name: '自习室名称',
+          introduce: '自习室简介自习室简介自习室简介',
+          number: 22
+        },
+        {
+          id: 2,
+          name: '自习室名称',
+          introduce: '自习室简介自习室简介自习室简介',
+          number: 22
+        },
+        {
+          id: 3,
+          name: '自习室名称',
+          introduce: '自习室简介自习室简介自习室简介',
+          number: 22
+        },
+      ]
+    };
+
+    computed = {};
+
+    onReady() {
+
+    }
+
+    methods = {};
+  }
+
+</script>

@@ -1,0 +1,74 @@
+<style lang="scss" scoped>
+  @import "../utils/css/shareCss";
+
+  .join-container {
+    @include absolute(160px, 300px);
+    top: 40%;
+    border-radius: 16px;
+    background-color: white;
+
+    input {
+      @include alignCenter(80%);
+      height: 35px;
+      border:1px solid rgba(225,228,232,1);
+      margin-top: 15px;
+    }
+  }
+
+  .title {
+    height: 22px;
+    margin: 26px 0 0 10%;
+  }
+
+  .confirm-btn {
+    @include alignCenter(80%);
+    height: 50px;
+    font-size: 0;
+
+    .btn {
+      @include inline;
+      width: 50%;
+      font-size: 16px;
+      text-align: center;
+      line-height: 50px;
+      color: #8A94A6;
+    }
+  }
+</style>
+<template>
+  <view class="join-container">
+    <view class="title">请输入操作码</view>
+    <label>
+      <input class="input-join-code">
+    </label>
+    <view class="confirm-btn">
+      <view class="btn">取消</view>
+      <view class="btn" style="color: #64C8BC">确认</view>
+    </view>
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+
+    export default class join extends wepy.page {
+        components = {};
+
+        mixins = [];
+
+        watch = {};
+
+        events = {};
+
+        data = {};
+
+        computed = {};
+
+        onReady() {
+
+        }
+
+        methods = {};
+    }
+
+</script>

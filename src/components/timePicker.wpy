@@ -48,21 +48,28 @@
 <template>
   <view class="time-picker-container">
     <view class="year-month">
-      <view class="detail">日</view>
-      <view class="detail">周</view>
-      <view class="detail">年</view>
-      <view class="detail">月</view>
+      <view class="detail" @tap="dateChange('day')"
+            style="{{choose === 'day' ? 'color:#64C8BC' : 'color:#8A94A6'}}">日</view>
+      <view class="detail" @tap="dateChange('week')"
+            style="{{choose === 'week' ? 'color:#64C8BC' : 'color:#8A94A6'}}">周</view>
+      <view class="detail" @tap="dateChange('month')"
+            style="{{choose === 'month' ? 'color:#64C8BC' : 'color:#8A94A6'}}"
+      >月</view>
+      <view class="detail" @tap="dateChange('year')"
+            style="{{choose === 'year' ? 'color:#64C8BC' : 'color:#8A94A6'}}"
+      >年</view>
     </view>
     <view class="choose-time-con">
-      <image src="../images/left.png" class="left-arrow"></image>
-      <view>2020年</view>
-      <image src="../images/right.png" class="right-arrow"></image>
+      <image src="../images/left.png" class="left-arrow" @tap="rangeChange('left')"></image>
+      <view>{{time}}</view>
+      <image src="../images/right.png" class="right-arrow" @tap="rangeChange('right')"></image>
     </view>
   </view>
 </template>
 
 <script>
     import wepy from 'wepy';
+    import {date, changeDateFormat, arrowOnclick} from '../utils/shared/dateDeal';
 
     export default class timePicker extends wepy.page {
         components = {};
@@ -73,14 +80,39 @@
 
         events = {};
 
-        data = {};
+        data = {
+          time: date({type: 'day'}).now.split(' ')[0],
+          choose: 'day'
+        };
 
-        computed = {};
+        computed = {
+
+        };
 
         onReady() {
+
         }
 
-        methods = {};
+        methods = {
+          dateChange(type) {
+            this.choose = type
+            let res = date({
+              type: type
+            })
+            let now =  changeDateFormat(res.now)
+            let future =  changeDateFormat(res.future)
+            console.log(res)
+            if (type  === 'day') {
+              this.time = now
+            } else {
+              this.time = `${now}~${future}`
+            }
+          },
+
+          rangeChange(direction) {
+            this.time = arrowOnclick(this.choose, this.time, direction)
+          }
+        };
     }
 
 </script>

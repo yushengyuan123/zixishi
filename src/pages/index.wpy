@@ -101,7 +101,8 @@
 
 <script>
   import wepy from 'wepy';
-  import navigator from '../components/navigator'
+  import join from '../components/join'
+  import near from '../components/near'
 
   export default class Index extends wepy.page {
     config = {
@@ -109,7 +110,8 @@
     };
 
     components = {
-      navigator: navigator
+        join: join,
+        near: near
     };
 
     mixins = [];
@@ -146,8 +148,6 @@
     computed = {};
 
     onReady() {
-      console.log('nihoa')
-      console.log(wepy.page)
     }
 
     methods = {

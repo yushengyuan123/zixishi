@@ -1,0 +1,23 @@
+<style lang="scss" scoped>
+  @import "../utils/css/shareCss";
+
+  .shadow-con {
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    background:rgba(32,32,39,0.24);
+  }
+</style>
+<template>
+  <view class="shadow-con">
+    <slot name="inner"></slot>
+  </view>
+</template>
+
+
+<script>
+  import wepy from 'wepy';
+  import shadow from './shadow'
+
+  export default class near extends wepy.page {}
+</script>

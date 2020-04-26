@@ -146,6 +146,7 @@
     import wepy from 'wepy';
     import * as echarts from '../utils/ec-canvas/echarts';
     import timePicker from '../components/timePicker'
+    import {date} from '../utils/shared/test';
 
     let chart = null
 

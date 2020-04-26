@@ -10,60 +10,59 @@
 </style>
 
 <script>
-    import wepy from 'wepy'
-    import 'wepy-async-function'
+  import wepy from 'wepy';
+  import 'wepy-async-function';
 
-
-    export default class extends wepy.app {
-        config = {
-            pages: [
-                'pages/paper/paper',
-                'pages/statistic',
-                'pages/create',
-                'pages/roomspace',
-                'pages/shudong',
-                'pages/my',
-                'pages/index',
-            ],
-            window: {
-                backgroundTextStyle: 'light',
-                navigationBarBackgroundColor: '#fff',
-                navigationBarTitleText: 'WeChat',
-                navigationBarTextStyle: 'black'
-            },
-            permission: {},
-            tabBar: {
-                "color": "#B3B3B3",
-                "selectedColor": "#64C8BC",
-                "borderStyle": "white",
-                "backgroundColor": "#ffffff",
-                "list": [
-                    {
-                        "selectedIconPath": "./images/navigator_zixishi.png",
-                        "iconPath": "./images/navigator_zixishi_negative.png",
-                        "pagePath": "pages/index",
-                        "text": "自习室"
-                    },
-                    {
-                        "selectedIconPath": "./images/statics_choose.png",
-                        "iconPath": "./images/statics_nagative.png",
-                        "pagePath": "pages/index",
-                        "text": "数据统计"
-                    },
-                    {
-                        "selectedIconPath": "./images/shudong_choose.png",
-                        "iconPath": "./images/shudong_nagative.png",
-                        "pagePath": "pages/index",
-                        "text": "树洞"
-                    },
-                    {
-                        "selectedIconPath": "./images/my_choose.png",
-                        "iconPath": "./images/my_nagative.png",
-                        "pagePath": "pages/index",
-                        "text": "我的"
-                    },
-                ]
-            }
-        }
-    }
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'pages/my',
+        'pages/statistic',
+        'pages/index',
+        'pages/paper/paper',
+        'pages/create',
+        'pages/roomspace',
+        'pages/shudong'
+      ],
+      window: {
+        backgroundTextStyle: 'light',
+        navigationBarBackgroundColor: '#fff',
+        navigationBarTitleText: 'WeChat',
+        navigationBarTextStyle: 'black'
+      },
+      permission: {},
+      tabBar: {
+        'color': '#B3B3B3',
+        'selectedColor': '#64C8BC',
+        'borderStyle': 'white',
+        'backgroundColor': '#ffffff',
+        'list': [
+          {
+            'selectedIconPath': './images/navigator_zixishi.png',
+            'iconPath': './images/navigator_zixishi_negative.png',
+            'pagePath': 'pages/index',
+            'text': '自习室'
+          },
+          {
+            'selectedIconPath': './images/statics_choose.png',
+            'iconPath': './images/statics_nagative.png',
+            'pagePath': 'pages/statistic',
+            'text': '数据统计'
+          },
+          {
+            'selectedIconPath': './images/shudong_choose.png',
+            'iconPath': './images/shudong_nagative.png',
+            'pagePath': 'pages/shudong',
+            'text': '树洞'
+          },
+          {
+            'selectedIconPath': './images/my_choose.png',
+            'iconPath': './images/my_nagative.png',
+            'pagePath': 'pages/my',
+            'text': '我的'
+          }
+        ]
+      }
+    };
+  }
 </script>
