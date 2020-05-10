@@ -17,7 +17,7 @@
     config = {
       pages: [
         'pages/my',
-        'pages/statistic',
+        /*'pages/statistic',*/
         'pages/index',
         'pages/paper/paper',
         'pages/create',
@@ -43,12 +43,12 @@
             'pagePath': 'pages/index',
             'text': '自习室'
           },
-          {
+          /*{
             'selectedIconPath': './images/statics_choose.png',
             'iconPath': './images/statics_nagative.png',
             'pagePath': 'pages/statistic',
             'text': '数据统计'
-          },
+          },*/
           {
             'selectedIconPath': './images/shudong_choose.png',
             'iconPath': './images/shudong_nagative.png',
