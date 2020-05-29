@@ -62,7 +62,7 @@
           <view class="room-name">{{item.name}}</view>
           <view class="room-introduce">{{item.introduce}}</view>
           <view class="room-people">{{item.number}}人</view>
-          <image class="arrow" src="../images/direction.png"></image>
+          <image class="arrow" src="../images/direction.png"/>
         </view>
       </view>
     </view>

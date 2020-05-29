@@ -3,7 +3,9 @@
 
   .index-con {
     height: 100vh;
-    background:rgba(245,245,245,1);
+    background:rgba(245,245,245,1); 
+    background-size: cover;
+    background-attachment: fixed;
   }
 
   .index-title {
@@ -13,8 +15,8 @@
   .index-item {
     .item-card {
       @include alignCenter(90%);
-      height: rpx(310);
-      margin-top: rpx(46);
+      height: rpx(275);
+      margin-top: rpx(35);
       background:linear-gradient(225deg,rgba(255,255,255,1) 0%,rgba(237,240,244,1) 100%);
       box-shadow:0px 6px 6px rgba(10,22,70,0.1);
       border-radius: 10px;
@@ -28,18 +30,18 @@
         width: 60%;
 
         .card-title {
-          $height: rpx(119);
+          $height: rpx(115);
           font: {
-            size: rpx(44);
+            size: rpx(40);
             weight: bold;
           };
           height: $height;
-          line-height: rpx(127);
+          line-height: rpx(115);
           margin-left: rpx(45);
         }
 
         .card-content {
-          $height: rpx(150);
+          $height: rpx(120);
           font-size: rpx(28);
           height: $height;
           margin-left: rpx(65);
@@ -54,21 +56,111 @@
 
         .image1 {
           @include imgStyle(85px, 135px);
-          padding: rpx(52) 0 0 0;
+          padding: rpx(50) 0 0 0;
         }
         .image2 {
-          @include imgStyle(108px, 80px);
-          padding: rpx(52) 0 0 rpx(70);
+          @include imgStyle(102px, 80px);
+          padding: rpx(45) 0 0 rpx(70);
         }
         .image3 {
           @include imgStyle(96px, 115px);
-          padding: rpx(52) 0 0 rpx(30);
+          padding: rpx(45) 0 0 rpx(30);
         }
       }
 
 
     }
   }
+
+  .mask {
+    @include mask;
+  }
+  .modalDlg {
+    @include modalDlg;
+  }
+
+ /*加入码框*/
+  .join-con {
+    position: relative;
+    padding: 15px 20px;
+    .modal-text {
+      display: block;
+      margin: 6px 0;
+      font-size: 16px;
+    }
+
+    .code-input {
+      width: 68vw;
+      height: 40px;
+      padding: 0 5px;
+      font-size: 16px;
+      margin: 10px auto;
+      border-radius: 4pt;
+      border: 1px solid #E1E4E8;
+    }
+
+    .button-con {
+      width: 70%;
+      margin: 2px auto;
+      text-align: center;
+      .code-button {
+        display: inline-block;
+        float: left;
+        margin: 5px 0 15px 0;
+        background: none;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        color: #8A94A6;
+      }
+      .sure-button {
+        float: right;
+        border: none;
+        color: #64C8BC;
+      }
+    }
+  }
+
+  /*附近房间列表*/
+  .room-list-con {
+    max-height: 60vh;
+    overflow: auto;
+    .room-con {
+      position: relative;
+      padding: 10px 15px;
+        width: 66vw;
+        border-bottom: 1px solid #E1E4E8;
+        text-align: left;
+      }
+      .room-info {
+        margin: 2px 0;
+      }
+      .room-name {
+        color: black;
+        font-size: 16px;
+      }
+      .room-intro {
+        color: #444444;
+        font-size: 15px;
+      }
+      .room-peoplenum {
+        display: inline-block;
+        border: 1px solid #64C8BC;
+        padding: 1px 4px;
+        font-size: 14px;
+        color: #64C8BC;
+      }
+      .arrow-icon{
+          position: absolute;
+          top: 45%;
+          right: 5%;
+        .choose-arrow{
+          width: 16px;
+          height: 16px;
+        }
+      }
+  }
+
 
 </style>
 <template>
@@ -91,11 +183,32 @@
             src="{{item.imageURL}}"
             alt="{{item.id}}"
             class="{{'image' + item.id}}"
-          >
-          </image>
+          />
         </view>
       </view>
     </view>
+
+    <view class="mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}" @tap="close"></view>
+ 
+    <view class="modalDlg" wx:if="{{showModal}}">
+      <view class="join-con" wx:if="{{isJoin}}">
+          <text class="modal-text">请输入加入码</text>
+          <input class="code-input" value="{{joinCode}}"/>
+          <view class="button-con">
+            <view @tap="close" class="code-button">取消</view>
+            <view @tap="goToRoom" class="code-button sure-button">确定</view>
+          </view>
+        </view>
+        <view class="room-list-con" wx:if="{{!isJoin}}">
+          <view class="room-con" wx:for="{{roomList}}" wx:key="{{index}}" @tap="goToRoom">
+            <view class="room-name room-info">{{item.name}}</view>
+            <view class="room-intro room-info">{{item.intro}}</view>
+            <view class="room-peoplenum room-info">{{item.peoplenum}}人</view>
+            <view class="arrow-icon"><image src="../images/choose_arrow.png" alt="点击箭头" class="choose-arrow"/></view>
+          </view>
+        </view>
+    </view>
+
   </view>
 </template>
 
@@ -142,7 +255,42 @@
           imageURL: '../images/near.png',
           id: 3
         },
-      ]
+      ],
+      roomList:[
+        {
+          name: "自习室名称",
+          intro: "自习室简介自习室简介自习室简介",
+          peoplenum: 22
+        },
+        {
+          name: "自习室名称",
+          intro: "自习室简介自习室简介自习室简介",
+          peoplenum: 22
+        },
+        {
+          name: "自习室名称",
+          intro: "自习室简介自习室简介自习室简介",
+          peoplenum: 22
+        },
+        {
+          name: "自习室名称",
+          intro: "自习室简介自习室简介自习室简介",
+          peoplenum: 22
+        },
+        {
+          name: "自习室名称",
+          intro: "自习室简介自习室简介自习室简介",
+          peoplenum: 22
+        },
+        {
+          name: "自习室名称",
+          intro: "自习室简介自习室简介自习室简介",
+          peoplenum: 22
+        }
+      ],
+      showModal: false,
+      joinCode: "",
+      isJoin: true
     };
 
     computed = {};
@@ -151,13 +299,34 @@
     }
 
     methods = {
-      go() {
-        console.log('nihao')
+      go(e) {
+        console.log(e)
+        if(e.currentTarget.dataset.classify.id == 1){
+          wepy.navigateTo({
+            url: '/pages/create'
+          })
+        }else if(e.currentTarget.dataset.classify.id == 2){
+          this.showModal = true;
+          this.isJoin = true;
+           wx.hideTabBar();
+        }else if(e.currentTarget.dataset.classify.id == 3) {
+          this.showModal = true;
+          this.isJoin = false;
+           wx.hideTabBar();
+        }
+
+      },
+      close(){
+        this.showModal = false;
+         wx.showTabBar();
+      },
+      goToRoom(id){
         wepy.navigateTo({
-          url: '/pages/create'
-        })
+          url: '/pages/roomspace'
+        });
+        this.showModal = false;
       }
-    };
+    }
   }
   ;
 </script>

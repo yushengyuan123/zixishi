@@ -53,10 +53,10 @@
 
 //标题
 @mixin title {
-  height: rpx(76);
+  height: rpx(72);
   padding: rpx(30) 0 0 rpx(30);
   font: {
-    size: rpx(68);
+    size: rpx(56);
     weight: bold;
   };
 }
@@ -74,3 +74,26 @@
   font-size: 20px;
 }
 
+/*遮罩*/
+@mixin mask{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #000;
+  z-index: 9000;
+  opacity: 0.6;
+}
+
+/*弹窗*/
+@mixin modalDlg{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 9999;
+  transform: translate(-50%, -46%);
+  background-color: #fff;
+  border-radius: 20rpx;
+  text-align: left;
+}

@@ -42,7 +42,7 @@
       <image
         src="{{item.imageURL}}"
         alt="item.id"
-      ></image>
+      />
       <view>{{item.name}}</view>
     </view>
   </view>

@@ -34,11 +34,13 @@
 </style>
 <template>
   <view class="paper-container">
-    <view class="title">写小纸条</view>
+    <view class="title">
+      <img class="return-icon" src="../../images/return.png" alt="返回"/>
+      写小纸条</view>
     <view class="text-area-con">
       <textarea name="nihao" id="" cols="30" rows="10" placeholder="写下你的小秘密"></textarea>
     </view>
-    <view class="finish-btn">我已经写好了</view>
+    <view class="finish-btn">我写好了</view>
   </view>
 </template>
 

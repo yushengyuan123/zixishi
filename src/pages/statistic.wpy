@@ -110,9 +110,9 @@
         <view class="average-title">今日时长</view>
         <view class="time-con">600分钟</view>
         <view class="rank">
-          <image src="../images/up.png" class="up"></image>
+          <image src="../images/up.png" class="up"/>
           <view>8.64%</view>
-          <image src="../images/rank.png" class="rank-png"></image>
+          <image src="../images/rank.png" class="rank-png"/>
         </view>
       </view>
 
@@ -120,9 +120,9 @@
         <view class="average-title">今日时长</view>
         <view class="time-con">600分钟</view>
         <view class="rank">
-          <image src="../images/up.png" class="up"></image>
+          <image src="../images/up.png" class="up"/>
           <view>8.64%</view>
-          <image src="../images/rank.png" class="rank-png"></image>
+          <image src="../images/rank.png" class="rank-png"/>
         </view>
       </view>
 
@@ -146,7 +146,6 @@
     import wepy from 'wepy';
     import * as echarts from '../utils/ec-canvas/echarts';
     import timePicker from '../components/timePicker'
-    import {date} from '../utils/shared/test';
 
     let chart = null
 

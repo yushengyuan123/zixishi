@@ -60,9 +60,9 @@
       >年</view>
     </view>
     <view class="choose-time-con">
-      <image src="../images/left.png" class="left-arrow" @tap="rangeChange('left')"></image>
+      <image src="../images/left.png" class="left-arrow" @tap="rangeChange('left')"/>
       <view>{{time}}</view>
-      <image src="../images/right.png" class="right-arrow" @tap="rangeChange('right')"></image>
+      <image src="../images/right.png" class="right-arrow" @tap="rangeChange('right')"/>
     </view>
   </view>
 </template>

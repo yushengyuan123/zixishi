@@ -12,24 +12,23 @@
 
   .input-con {
     position: relative;
-    @include alignCenter(80%);
-    height: rpx(100);
+    @include alignCenter(84%);
+    height: rpx(90);
     margin-top: rpx(30);
 
     input {
-      height: rpx(100);
+      height: rpx(90);
       width: 100%;
       border: 1px solid rgba(225, 228, 232, 1);
-      padding-left: rpx(50);
       border-radius: 4px;
     }
 
     view {
       position: absolute;
-      height: rpx(50);
+      height: rpx(40);
       margin: rpx(25) 0 rpx(25) rpx(50);
       color: #8A94A6;
-      line-height: rpx(50);
+      line-height: rpx(40);
       background-color: white;
     }
   }

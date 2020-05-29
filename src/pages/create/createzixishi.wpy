@@ -7,9 +7,6 @@
   }
 
 
-
-
-
 </style>
 <template>
   <view class="create-container">
@@ -19,9 +16,8 @@
 
 <script>
   import wepy from 'wepy';
-  import { test } from '../utils/shared/test';
 
-  export default class navigator extends wepy.page {
+  export default class createzixishi extends wepy.page {
     components = {};
 
     mixins = [];
