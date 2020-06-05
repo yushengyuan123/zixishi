@@ -143,96 +143,96 @@
 </template>
 
 <script>
-    import wepy from 'wepy';
-    import * as echarts from '../utils/ec-canvas/echarts';
-    import timePicker from '../components/timePicker'
+  import wepy from 'wepy';
+  import * as echarts from '../utils/ec-canvas/echarts';
+  import timePicker from '../components/timePicker';
+  import { statisticMol } from '../utils/apiManager/statisticApi';
+  import { options } from '../utils/chartoptions/chartoptions';
 
-    let chart = null
+  let chart = null;
 
-    export default class statistic extends wepy.page {
-        config = {
-            navigationBarTitleText: '数据统计',
-            usingComponents: {
-                'ec-canvas': "../utils/ec-canvas/ec-canvas"
-            }
-        };
+  const test = {
+    'message': 'success',
+    'code': '1',
+    'data': {
+      'times': {
+        '周日': 23,
+        '周一': 0,
+        '周二': 21,
+        '周三': 0,
+        '周四': 0,
+        '周五': 0,
+        '周六': 0
+      }
+    }
+  };
 
-        components = {
-            timePicker: timePicker
-        };
-
-        mixins = [];
-
-        watch = {};
-
-        events = {};
-
-        data = {
-            ec: {
-                onInit: this.initChart
-            }
-        };
-
-        computed = {};
-
-        onReady() {
-
-        }
-
-        initChart(canvas, width, height, dpr) {
-            chart = echarts.init(canvas, null, {
-                width: width,
-                height: height,
-                devicePixelRatio: dpr // new
-            });
-            canvas.setChart(chart);
-
-            var option = {
-                color: ['#3398DB'],
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                    }
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: [
-                    {
-                        type: 'category',
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                        axisTick: {
-                            alignWithLabel: true
-                        }
-                    }
-                ],
-                yAxis: [
-                    {
-                        type: 'value'
-                    }
-                ],
-                series: [
-                    {
-                        name: '直接访问',
-                        type: 'bar',
-                        barWidth: '60%',
-                        data: [10, 52, 200, 334, 390, 330, 220]
-                    }
-                ]
-            };
-
-            chart.setOption(option);
-            return chart;
-        }
-
-        methods = {
-            test() {
-                return 'caonima'
-            },
-        };
+  export default class statistic extends wepy.page {
+    config = {
+      navigationBarTitleText: '数据统计',
+      usingComponents: {
+        'ec-canvas': '../utils/ec-canvas/ec-canvas'
+      }
     };
+
+    components = {
+      timePicker: timePicker
+    };
+
+    mixins = [];
+
+    watch = {};
+
+    events = {
+      'returnDate': (data) => {
+        console.log(data)
+        this.formatReqData(data.time, data.mode)
+      }
+    };
+
+    data = {
+      ec: {
+        onInit: this.initChart
+      },
+      pickerDate: '123'
+    };
+
+    computed = {};
+
+    onLoad() {
+      // statisticMol.getLong().then(res => {
+      //   console.log(res)
+      // })
+    }
+
+    initChart(canvas, width, height, dpr) {
+      chart = echarts.init(canvas, null, {
+        width: width,
+        height: height,
+        devicePixelRatio: dpr // new
+      });
+      canvas.setChart(chart);
+      const option = options(test.data.times);
+      chart.setOption(option);
+      return chart;
+    }
+
+    formatReqData(date, mode) {
+      console.log(date)
+      switch (mode) {
+        case 'year': {
+          return
+        }
+        case 'month': {
+          return
+        }
+        case 'week': {
+          return date.replace('~', ' - ')
+        }
+        case 'day': {
+          return date
+        }
+      }
+    }
+  };
 </script>

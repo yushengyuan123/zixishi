@@ -60,9 +60,9 @@
       >年</view>
     </view>
     <view class="choose-time-con">
-      <image src="../images/left.png" class="left-arrow" @tap="rangeChange('left')"/>
+      <image src="../images/left.png" class="left-arrow" @tap="rangeChange('left')"></image>
       <view>{{time}}</view>
-      <image src="../images/right.png" class="right-arrow" @tap="rangeChange('right')"/>
+      <image src="../images/right.png" class="right-arrow" @tap="rangeChange('right')"></image>
     </view>
   </view>
 </template>
@@ -76,9 +76,13 @@
 
         mixins = [];
 
+
+
         watch = {};
 
-        events = {};
+        events = {
+
+        };
 
         data = {
           time: date({type: 'day'}).now.split(' ')[0],
@@ -89,8 +93,8 @@
 
         };
 
-        onReady() {
-
+        onLoad() {
+          console.log('pickerDate:',this.pickerDate)
         }
 
         methods = {
@@ -101,17 +105,24 @@
             })
             let now =  changeDateFormat(res.now)
             let future =  changeDateFormat(res.future)
-            console.log(res)
             if (type  === 'day') {
               this.time = now
             } else {
               this.time = `${now}~${future}`
             }
+            this.$emit('returnDate', {
+              time: this.time,
+              mode: type
+            })
           },
 
           rangeChange(direction) {
             this.time = arrowOnclick(this.choose, this.time, direction)
+            this.$emit('returnDate', {
+              time: this.time
+            })
           }
+
         };
     }
 
