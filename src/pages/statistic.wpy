@@ -230,9 +230,22 @@
         }
 
         methods = {
-            test() {
-                return 'caonima'
-            },
+            
         };
+
+        requestData(){
+          RequestService.soeRequest('GET', '', '/statistic/getCount',
+            (fail) => {
+              console.log(fail);
+            },
+            (res) => {
+              console.log("成功数据",res.data);
+
+          })
+        }
+
+        onShow(){
+          this.requestData();
+        }
     };
 </script>

@@ -1,0 +1,104 @@
+<style lang="scss" scoped>
+  @import "../utils/css/shareCss";
+
+  .music-container {
+    @include fixed(auto, 207px);
+    top: 40%;
+    border-radius: 10px;
+    background-color: white;
+    z-index: 100;
+
+    view {
+      position: relative;
+      height: 49px;
+      width: 100%;
+      text-align: center;
+      line-height: 49px;
+      font: {
+        size: 18px;
+      };
+      color: #202027;
+
+
+      .lock {
+        @include absolute(20px, 20px);
+        top: calc(50% - 10px);
+
+      }
+    }
+  }
+  
+  </style>
+<template>
+  <view class="music-container">
+    <view
+      class="music-list"
+      wx:for="{{musicList}}"
+      wx:key="{{id}}"
+      data-classify="{{item}}"
+      data-index='{{item.id}}'
+    >
+      <image
+        src="../images/lock.png"
+        alt="lock"
+        class="lock"
+      >
+      {{item.name}}<span style="color: #49958C">{{item.id === choose? '(当前使用)': ''}}</span>
+    </view>
+    <view>
+      <image
+        src="../images/lock.png"
+        alt="lock"
+        class="lock"
+      >
+      自定义
+    </view>
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+
+    export default class music extends wepy.page {
+        components = {};
+
+        props={
+          musicSrc:{
+            type: String,
+            twoWay: true
+          }
+        }
+
+        mixins = [];
+
+        watch = {};
+
+        events = {};
+
+        data = {
+            musicList:[
+                {
+                    name: "音乐1",
+                    id: 0,
+                },
+                {
+                    name: "音乐2",
+                    id: 0,
+                },
+                {
+                    name: "音乐3",
+                    id: 0,
+                }
+            ]
+        };
+
+        computed = {};
+
+        onReady() {
+            console.log(this.musicSrc);
+        }
+
+        methods = {};
+    }
+
+</script>
