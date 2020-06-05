@@ -1,38 +1,29 @@
+import {baseUrl} from '../shared/request';
+
 let Authorization = ''
 
-let base_url = 'http://47.102.125.28:8090/api/bookstore/'
 
 export class _request {
-  post(url, data) {
+  request(methods, header, config) {
+    let baseConfig = {
+      url: baseUrl + url,
+      success (res) {
+        console.log(res.data)
+      }
+    }
+    baseConfig = Object.assign(baseConfig, config)
     return new Promise(resolve => {
-      wx.request({
-        url: base_url + url,
-        method: 'POST',
-        data: JSON.stringify(data),
-        header: {
-          Authorization: Authorization,
-          'content-type': 'application/json' // 默认值
-        },
-        success (res) {
-          console.log(res.data)
-        }
-      })
+      wx.request(config)
     })
+  }
+}
+
+class differentMethods extends _request{
+  constructor() {
+    super()
+  }
+  post() {
+
   }
 
-  get() {
-    return new Promise(resolve => {
-      wx.request({
-        url: 'test.php',
-        method: 'GET',
-        header: {
-          Authorization: Authorization,
-          'content-type': 'application/json' // 默认值
-        },
-        success (res) {
-          console.log(res.data)
-        }
-      })
-    })
-  }
 }

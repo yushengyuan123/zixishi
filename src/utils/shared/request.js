@@ -1,6 +1,6 @@
 import wepy from 'wepy'
 
-const baseUrl = 'http://qgailab.com:9998/api/bookstore';
+export const baseUrl = 'http://qgailab.com:9998/api/bookstore';
 
 /**wx.request服务封装 */
 export class RequestService {
@@ -61,8 +61,8 @@ export class RequestService {
     wepy.request({
       /**header 如果需要验证token 可封装另外的getHeaders函数获取本地缓存token */
       // header: this.getHeaders(),
-      header: 
-      reqUrl=="/user/login"? 
+      header:
+      reqUrl=="/user/login"?
       {
         'content-type': 'application/json'
       }
