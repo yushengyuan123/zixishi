@@ -38,14 +38,15 @@
       <img class="return-icon" src="../../images/return.png" alt="返回"/>
       写小纸条</view>
     <view class="text-area-con">
-      <textarea name="nihao" id="" cols="30" rows="10" placeholder="写下你的小秘密"></textarea>
+      <textarea id="" cols="30" rows="10" placeholder="写下你的小秘密" @input="getInfo" value="{{content}}"></textarea>
     </view>
-    <view class="finish-btn">我写好了</view>
+    <view class="finish-btn" @tap="sendRequest">我写好了</view>
   </view>
 </template>
 
 <script>
     import wepy from 'wepy';
+    import { RequestService } from '../../utils/shared/request';
 
     export default class paper extends wepy.page {
         components = {};
@@ -57,7 +58,7 @@
         events = {};
 
         data = {
-
+          content: ""
         };
 
         computed = {};
@@ -65,6 +66,34 @@
         onReady() {
         }
 
-        methods = {};
+        methods = {
+          getInfo(e){
+            console.log(e)
+            this.content = e.detail.value;
+          },
+          sendRequest(){
+            console.log(this.content)
+            let data = {
+              content: this.content
+            }
+            RequestService.soeRequest('POST', data, '/treeHole/post',
+              (fail) => {
+                console.log(fail);
+                wx.showToast({
+                  title: '失败了...(ಥ_ಥ)',
+                  icon: "none",   
+                  duration: 2000, 
+                })
+              },
+              (res) => {
+                console.log( "成功数据", res);
+                wx.showToast({
+                  title: '成功写好啦~',
+                  icon: "success",   
+                  duration: 2000, 
+                })
+              })
+          }
+        };
     }
 </script>

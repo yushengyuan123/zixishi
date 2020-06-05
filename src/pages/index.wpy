@@ -214,8 +214,7 @@
 
 <script>
   import wepy from 'wepy';
-  import join from '../components/join'
-  import near from '../components/near'
+  import { RequestService } from '../utils/shared/request';
 
   export default class Index extends wepy.page {
     config = {
@@ -223,8 +222,6 @@
     };
 
     components = {
-        join: join,
-        near: near
     };
 
     mixins = [];
@@ -296,12 +293,68 @@
     computed = {};
 
     onReady() {
+      wx.login({
+        success: function(res){
+          console.log(res)
+          let code = res.code;
+
+
+          RequestService.soeRequest('POST', {code, code}, '/user/login',
+            (fail) => {
+              console.log(fail);
+              console.log('失败');
+            },
+            (res) => {
+              console.log(res);
+              let Authorization = res.cookies[0].split(";")[0];
+              console.log(Authorization)
+              // 写入token
+              wx.setStorageSync('Authorization', Authorization);
+              console.log('成功');
+            })
+
+
+
+
+          // // 可以通过 wx.getSetting 先查询一下用户是否授权了 "scope.record" 这个 scope
+          //   wx.getSetting({
+          //     success(res) {
+          //       if (!res.authSetting['scope.userLocation']) {
+          //         wx.authorize({
+          //           scope: 'scope.userLocation',
+          //           success (res) {
+          //             console.log(res)
+          //             wx.getLocation({
+          //               type: 'wgs84',
+          //               success (res) {
+          //                 const lat = res.latitude
+          //                 const lng = res.longitude
+          //                 console.log(lat,lng)
+          //               }
+          //               })
+          //           }
+          //         })
+          //       }
+          //     }
+          //   })
+        },
+        fail: function() {
+          // fail
+        },
+        complete: function() {
+          // complete
+        }
+      })
+    }
+
+    onLoad(){
     }
 
     methods = {
       go(e) {
         console.log(e)
         if(e.currentTarget.dataset.classify.id == 1){
+          wx.showTabBar();
           wepy.navigateTo({
             url: '/pages/create'
           })
@@ -321,10 +374,11 @@
          wx.showTabBar();
       },
       goToRoom(id){
+        wx.showTabBar();
+        this.showModal = false;
         wepy.navigateTo({
           url: '/pages/roomspace'
         });
-        this.showModal = false;
       }
     }
   }

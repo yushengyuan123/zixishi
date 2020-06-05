@@ -89,12 +89,13 @@
         style="{{choose === 2 ? 'border: 1px solid #64C8BC' : 'border:1px solid rgba(225,228,232,1);'}}"
       >
     </view>
-    <view class="create-btn">创建</view>
+    <view class="create-btn" @tap="createRoom">创建</view>
   </view>
 </template>
 
 <script>
     import wepy from 'wepy';
+    import { RequestService } from '../utils/shared/request';
 
     export default class navigator extends wepy.page {
         components = {};
@@ -178,6 +179,11 @@
                     })
                     this.inputList.animation_introduce.translate(0, 0).step()
                 }
+            },
+            createRoom(){
+              wepy.navigateTo({
+                url: "/pages/roomspace"
+              })
             }
         };
     };

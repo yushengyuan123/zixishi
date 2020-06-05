@@ -1,12 +1,6 @@
 <style lang="scss" scoped>
   @import "../utils/css/shareCss";
 
-  .global-shadow {
-    @include absolute(100%, 100%);
-    background: rgba(32, 32, 39, 0.5);
-    z-index: 10;
-  }
-
   .background-container {
     @include fixed(auto, 207px);
     top: 30%;
@@ -44,7 +38,7 @@
 
 </style>
 <template>
-  <view  wx:if="{{bgShow}}">
+  
   <view class="background-container">
     <view
       class="background-list"
@@ -52,6 +46,7 @@
       wx:key="{{id}}"
       data-classify="{{item}}"
       data-index='{{item.id}}'
+      @tap="chooseBg"
     >
       <image
         src="{{item.url}}"
@@ -74,9 +69,6 @@
       自定义
     </view>
   </view>
-    <view class="global-shadow" @tap="close">
-    </view>
-  </view>
 </template>
 
 <script>
@@ -84,13 +76,13 @@
 
     export default class background extends wepy.page {
         components = {};
- 
-        props = {
-          bgShow: {
-              type: Boolean,
-              twoWay: true
-            }
-        };
+
+        props={
+          bgSrc:{
+            type: String,
+            twoWay: true
+          }
+        }
 
         mixins = [];
 
@@ -130,9 +122,9 @@
         }
 
         methods = {
-          close(){
-            this.bgShow = false;
-            this.$apply()
+          chooseBg(e){
+            this.bgSrc = e.currentTarget.dataset.classify.url;
+            console.log(this.bgSrc)
           }
         };
     }

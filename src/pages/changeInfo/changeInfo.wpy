@@ -1,0 +1,91 @@
+<style lang="scss" scoped>
+  @import "../../utils/css/shareCss";
+
+  .change-con {
+    width: 100%;
+    height: 100vh;
+    padding: 20px 0;
+    background-image: url('https://s1.ax1x.com/2020/05/15/YrNmRA.png');
+    background-attachment: fixed;
+    background-size: cover;
+
+    .save-button {
+      position: absolute;
+      top: 45px;
+      right: 30px;
+      color: #64C8BC;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    .change-input {
+      width: 90%;
+      margin: 0 auto;
+      margin-top: 50px;
+      padding: 3px 5px;
+      background: none;
+      outline: none;
+      border-bottom: 2px solid #EDF0F4;
+      font-size: 17px;
+    }
+  }
+
+  .title {
+    @include title;
+  }
+
+</style>
+<template>
+  <view class="change-con">
+    <view class="title">
+      修改{{mode}}
+    </view>
+    <view class="save-button" @tap="save">保存</view>
+    <input class="change-input" />
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class changeInfo extends wepy.page {
+    components = {};
+
+    mixins = [];
+
+    watch = {};
+
+    events = {};
+
+    data = {
+      mode: ""
+    };
+
+    computed = {};
+
+    onLoad(option) {
+      console.log(option)
+      this.mode = option.mode;
+    }
+
+    methods = {
+      save(){
+        wx.showModal({
+          title: '提示',
+          content: '确定保存吗٩(๑>◡<๑)۶',
+          success: function(res) {
+            if (res.confirm) {
+              if(this.mode == "昵称"){
+
+              }else if(this.mode == "签名"){
+                
+              }
+            } else if (res.cancel) {
+            console.log('用户点击取消')
+            }
+          }
+        })
+      }
+    };
+  }
+</script>

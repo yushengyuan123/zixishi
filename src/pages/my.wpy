@@ -81,8 +81,9 @@
             {{item.date}}
             </picker>
           <open-data wx:if="{{!item.id}}" type="userAvatarUrl" class="user-icon"></open-data>
-          <open-data wx:if="{{item.id == 1}}" type="userNickName">{{item.content}}</open-data>
-          <view wx:if="{{item.id == 4}}">{{item.content}}</view>
+          <open-data wx:if="{{(item.id == 1 && !hasName)}}" type="userNickName">{{item.content}}</open-data>
+          <view wx:if="{{(item.id == 1 && hasName)}}" @tap="changeName">{{item.content}}</view>
+          <view wx:if="{{item.id == 4}}" @tap="changeSign">{{item.content}}</view>
         </view>
       </view>
     </view>
@@ -91,7 +92,7 @@
 
 <script>
   import wepy from 'wepy';
-  import { user } from '../utils/shared/wxlogin';
+  // import { user } from '../utils/shared/wxlogin';
 
   export default class my extends wepy.page {
     config = {
@@ -106,6 +107,7 @@
     events = {};
 
     data = {
+      hasName: true,
       myList: [
         {
           id: 0,
@@ -116,7 +118,7 @@
         {
           id: 1,
           title: '昵称',
-          content: ''
+          content: '这个名称有八个字'
         },
         {
           id: 2,
@@ -140,7 +142,7 @@
     computed = {};
 
     onReady() {
-      user.getUser();
+      // user.getUser();
     }
 
     methods = {
@@ -154,6 +156,16 @@
       bindDateChange(e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.myList[3].date= e.detail.value
+      },
+      changeName(){
+        wepy.navigateTo({
+          url: "/pages/changeInfo/changeInfo?mode=昵称"
+        })
+      },
+      changeSign(){
+        wepy.navigateTo({
+          url: "/pages/changeInfo/changeInfo?mode=签名"
+        })
       }
     };
   }

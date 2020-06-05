@@ -21,7 +21,7 @@
 		}
 	},
 	"compileType": "miniprogram",
-	"appid": "touristappid",
+	"appid": "wxc0e386b051148e9a",
 	"projectname": "monitor",
 	"miniprogramRoot": "dist/",
 	"simulatorType": "wechat",
@@ -67,6 +67,13 @@
 					"id": -1,
 					"name": "树洞",
 					"pathName": "pages/shudong",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "room",
+					"pathName": "pages/roomspace",
 					"scene": null
 				}
 			]

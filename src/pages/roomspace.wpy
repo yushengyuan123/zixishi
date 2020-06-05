@@ -4,14 +4,21 @@
   .room-container {
     width: 100%;
     height: 100vh;
-    background-image: url('https://s1.ax1x.com/2020/05/15/YrNmRA.png');
     background-attachment: fixed;
     background-size: cover;
   }
 
+  .global-shadow {
+    @include absolute(100%, 100%);
+    top: 0;
+    background: rgba(32, 32, 39, 0.5);
+    z-index: 10;
+  }
+
   .room-title {
     @include alignCenter(100%);
-    line-height: 5rem;
+    padding-top: 1rem;
+    line-height: 4rem;
     text-align: center;
     font: {
       size: 20px;
@@ -19,15 +26,16 @@
     }
 
     .energy-con {
-      float: right;
-      text-align: right;
+      position: absolute;
+      top: 2.5rem;
+      right: 1.5rem;
       color: white;
       height: 18px;
       line-height: 18px;
+      z-index: 10;
       font: {
         size: 12px;
       };
-      margin-top: 2.5rem;
       width: 58px;
       border-radius: 30px 30px 30px 30px;
       background-color: #49958C;
@@ -43,15 +51,39 @@
   }
 
   .head-icon-con {
-    @include absolute(200px, 200px);
-    border-radius: 50%;
-    background-color: yellow;
+    position: absolute;
+    width: 100%;
+    text-align: center;
     top: calc(45% - 100px);
+
+    .head-icon{
+      width: 160px;
+      height: 160px;
+      display: inline-block;
+      border-radius: 50%;
+      background-size: cover;
+      background-repeat: no-repeat;
+      box-shadow: 2px 2px 5px rgba(94, 93, 93, 0.425);
+      z-index: 1;
+    }
+
+    .other-head-icon-con{
+      display: inline-block;
+      position: absolute;
+      border-radius: 50%;
+      background-size: cover;
+      background-repeat: no-repeat;
+      box-shadow: 2px 2px 5px rgba(94, 93, 93, 0.425);
+      z-index: 1;
+    }
   }
 
   .time-con {
-    @include absolute(56px, 107px);
-    bottom: 144px;
+    width: 100%;
+    position: absolute;
+    text-align: center;
+    bottom: 150px;
+    z-index: 2;
     font: {
       size: 30px;
       weight: bold;
@@ -59,11 +91,12 @@
   }
 
   .media-con {
-    position: absolute;
     width: 100%;
+    position: absolute;
     bottom: 94px;
     height: 40px;
     text-align: center;
+    z-index: 10;
 
     image {
       @include inline;
@@ -73,29 +106,161 @@
     }
   }
 
+  /*背景选择*/
+  .background-container {
+    @include fixed(auto, 207px);
+    top: 30%;
+    border-radius: 10px;
+    background-color: white;
+    max-height: 320px;
+    overflow: auto;
+    z-index: 100;
+
+    view {
+      position: relative;
+      height: 49px;
+      width: 100%;
+      text-align: center;
+      line-height: 49px;
+      font: {
+        size: 18px;
+      };
+      color: #202027;
+
+      .user-bg {
+        position: absolute;
+        display: block;
+        height: 100%;
+        opacity: 0.3;
+        width: 100%;
+        z-index: -1;
+      }
+
+      .lock {
+        @include absolute(20px, 20px);
+        top: calc(50% - 10px);
+
+      }
+    }
+  }
+
+    /*音乐选择*/
+  .music-container {
+    @include fixed(auto, 207px);
+    top: 30%;
+    border-radius: 10px;
+    background-color: white;
+    max-height: 320px;
+    overflow: auto;
+    z-index: 100;
+
+    view {
+      position: relative;
+      height: 49px;
+      width: 100%;
+      text-align: center;
+      line-height: 49px;
+      font: {
+        size: 18px;
+      };
+      color: #202027;
+
+
+      .lock {
+        @include absolute(20px, 20px);
+        top: calc(50% - 10px);
+
+      }
+    }
+  }
 
 </style>
 <template>
-  <view class="room-container">
-    <background :bgShow.sync="bgshow" wx:if="{{bgshow}}"></background>
+  <view class="room-container" style="background-image: url({{bgSrc}})" @tap="changeHead">
+    <view>
     <view class="room-title">
-      加入码:7777777
+      <view class="join-code">加入码:7777777</view>
       <view class="energy-con">
         123
         <image src="../images/thunder.png" alt="thunder"/>
       </view>
     </view>
-    <image
-      class="head-icon-con"
-      src="../images/head_icon.png"
-      alt="head"
-    />
+    <view class="head-icon-con" wx:if="{{hasHead}}">
+      <view class="head-icon" style="background-image: url({{headSrc}})"></view>
+      <view 
+        class="other-head-icon-con"
+        wx:for="{{headImgList}}"
+        wx:key="{{item.id}}"
+        data-classify="{{item}}"
+        data-url='{{item.url}}'
+        style="background-image: url({{item.url}});{{item.style}}"
+      >
+      </view>
+    </view>
     <view class="time-con">12:57</view>
     <view class="media-con">
-      <image src="../images/group_background.png" alt="group_background" @tap="bgChange"/>
-      <image src="../images/music.png" alt="music"/>
-      <image src="../images/suspend.png" alt="suspend"/>
-      <image src="../images/stop.png" alt="stop"/>
+      <image style="margin-left: 0;" src="../images/group_background.png" alt="group_background" @tap.stop="bgChange"/>
+      <image src="../images/music.png" alt="music" @tap.stop="musicChange"/>
+      <image src="../images/suspend.png" alt="suspend" @tap.stop="audioRestart"/>
+      <image src="../images/stop.png" wx:if="{{isPlay}}" alt="stop" @tap.stop="audioPause"/>
+      <image src="../images/play.png" wx:if="{{!isPlay}}" alt="paly" @tap.stop="audioPlay"/>
+    </view>
+  </view>
+
+  <!--背景选择-->
+  <view class="background-container" wx:if="{{bgShow}}">
+    <view
+      class="background-list"
+      wx:for="{{bg_list}}"
+      wx:key="{{id}}"
+      data-classify="{{item}}"
+      data-url='{{item.url}}'
+      data-isLock="{{item.isLock}}"
+      @tap.stop="chooseBg"
+    >
+      <image
+        src="{{item.url}}"
+        alt="item.id"
+        class="user-bg"
+      >
+      <image
+        src="../images/lock.png"
+        alt="lock"
+        class="lock"
+        wx:if="{{item.isLock}}"
+      >
+      背景{{item.id}}<span style="color: #49958C">{{item.url === bgSrc? '(当前使用)': ''}}</span>
+    </view>
+    <view @tap.stop="diyBg">
+      自定义
+    </view>
+  </view>
+
+  <!--音乐选择-->
+   <view class="music-container" wx:if="{{musicShow}}">
+    <view
+      class="music-list"
+      wx:for="{{musicList}}"
+      wx:key="{{id}}"
+      data-classify="{{item}}"
+      data-music='{{item.src}}'
+      data-isLock="{{item.isLock}}"
+      @tap.stop="chooseMusic"
+    >
+      <image
+        src="../images/lock.png"
+        alt="lock"
+        class="lock"
+        wx:if="{{item.isLock}}"
+      >
+      {{item.name}}<span style="color: #49958C">{{item.src === musicSrc? '(当前使用)': ''}}</span>
+    </view>
+    <view @tap.stop="diyMusic">
+      自定义
+    </view>
+  </view>
+
+    <view class="global-shadow" wx:if="{{maskShow}}" @tap.stop="closeBg">
     </view>
   </view>
 </template>
@@ -103,10 +268,11 @@
 <script>
   import wepy from 'wepy';
   import background from '../components/background'
+  import music from '../components/music'
 
   export default class roomspace extends wepy.page {
     components = {
-        background: background
+        music: music
     };
 
     mixins = [];
@@ -116,17 +282,232 @@
     events = {};
 
     data = {
-      bgshow: false
+      audioCtx: "",
+      bgShow: false,
+      musicShow: false,
+      maskShow: false,
+      hasHead: true,
+      isPlay: false,
+      headSrc: "../images/head_icon.png",
+      bgSrc: 'https://s1.ax1x.com/2020/05/15/YrNmRA.png',
+      musicSrc: 'https://ws.stream.qqmusic.qq.com/C400003P7AKr4Q6NnS.m4a?guid=4242576791&vkey=F02F858828F5CE97E71CF80C53301FDFFB156AD671052E2FD8402DFEE36BD2D725DA81F7E09151AAA734B92D718E4E489781EC8FFDDDC5FE&uin=1663&fromtag=66',
+      choose: 1,
+      bg_list: [
+          {
+              url: 'https://s1.ax1x.com/2020/05/15/YrNmRA.png',
+              id: 0,
+              isLock: false
+          },
+          {
+              url: '../images/bg2.png',
+              id: 1,
+              isLock: false
+          },
+          {
+              url: 'https://s1.ax1x.com/2020/05/30/tMg0gI.jpg',
+              id: 4,
+              isLock: false
+          },
+          {
+              url: 'https://s1.ax1x.com/2020/05/30/tMgw8A.jpg',
+              id: 5,
+              isLock: false
+          },
+          {
+              url: '../images/bg3.png',
+              id: 2,
+              isLock: true
+          },
+          {
+              url: '../images/bg1.png',
+              id: 3,
+              isLock: true
+          },
+      ],
+      musicList:[
+          {
+              name: "大鱼 钢琴版",
+              src: "https://ws.stream.qqmusic.qq.com/C400003P7AKr4Q6NnS.m4a?guid=4242576791&vkey=F02F858828F5CE97E71CF80C53301FDFFB156AD671052E2FD8402DFEE36BD2D725DA81F7E09151AAA734B92D718E4E489781EC8FFDDDC5FE&uin=1663&fromtag=66",
+              id: 0,
+              isLock: false
+          },
+          {
+              name: "Lemon",
+              src: "https://ws.stream.qqmusic.qq.com/C400003pZAGe4Q2w81.m4a?guid=4242576791&vkey=CBEF0ED29EF5ADAA344B31C3568A089246C2822F61A070E7B0FDCB5B8623B6A0699B77EC50AA76A22FD5E1438D46540C75EBE00FC3F6E7FF&uin=1663&fromtag=66",
+              id: 1,
+              isLock: false
+          },
+          {
+              name: "One Summer's Day",
+              src: "https://ws.stream.qqmusic.qq.com/C400002wA2Z83XHXMi.m4a?guid=4242576791&vkey=34ECE671E14DC911E1417D3185D5941580CA6FDC2C3B32F83660E59688CE426BA5D6CC9B9CFE2134025323051AF983089909382E0E4FAFD6&uin=1663&fromtag=66",
+              id: 2,
+              isLock: true
+          },
+          {
+              name: "Night Changes",
+              src: "https://ws.stream.qqmusic.qq.com/C400003TNqN63vinlY.m4a?guid=4242576791&vkey=2A5794053A2A6B9F874C626CD71248DFE86446207DE47F28FCEBD52C672FA2CBFB8B766DB5AE6C42D431B911725E07FA2086BDB42FD9DAAC&uin=1663&fromtag=66",
+              id: 3,
+              isLock: true
+          }
+      ],
+      headImgList: [
+        {
+          url: "https://s1.ax1x.com/2020/05/30/tMT6lF.png",
+          style: "width:80px;height:80px;top:-20px;left:15px;"
+        },
+        {
+          url: "https://s1.ax1x.com/2020/05/30/tMT6lF.png",
+          style: "width:65px;height:65px;top:-70px;left:200px;"
+        },
+        {
+          url: "https://s1.ax1x.com/2020/05/30/tMT6lF.png",
+          style: "width:40px;height:40px;top:20px;right:40px;"
+        },
+          {
+          url: "https://s1.ax1x.com/2020/05/30/tMT6lF.png",
+          style: "width:40px;height:40px;top:150px;left:50px;"
+        },
+        {
+          url: "https://s1.ax1x.com/2020/05/30/tMT6lF.png",
+          style: "width:60px;height:60px;top:170px;left:180px;"
+        },
+        {
+          url: "https://s1.ax1x.com/2020/05/30/tMT6lF.png",
+          style: "width:50px;height:50px;top:140px;right:30px;"
+        },
+      ]
     };
 
     computed = {};
 
     onReady() {
+      this.audioCtx = wx.createInnerAudioContext('myAudio');
+      this.audioCtx.src = this.musicSrc;
     }
 
     methods = {
       bgChange(){
-        this.bgshow = true;
+        this.bgShow = true;
+        this.maskShow = true;
+      },
+      musicChange(){
+        this.musicShow = true;
+        this.maskShow = true;
+      },
+      closeBg(){
+        this.bgShow = false;
+        this.musicShow = false;
+        this.maskShow = false;
+        // this.hasHead = true;
+      },
+      audioPlay() {
+        this.audioCtx.play();
+        this.isPlay = true;
+      },
+      audioPause() {
+        this.audioCtx.pause();
+        this.isPlay = false;
+      },
+      audioRestart() {
+        this.audioCtx.seek(0);
+        this.audioCtx.pause();
+        this.isPlay = false;
+      },
+      chooseBg(e){
+        if(e.currentTarget.dataset.classify.isLock){
+          wx.showToast({
+            title: '需要解锁后才能使用哟',
+            icon: "none",   
+            duration: 2000, 
+          })
+          return false;
+        }
+        this.bgSrc = e.currentTarget.dataset.url;
+
+        this.bgShow = false;
+        this.musicShow = false;
+        this.maskShow = false;
+      },
+      chooseMusic(e){
+        if(e.currentTarget.dataset.classify.isLock){
+          wx.showToast({
+            title: '需要解锁后才能使用哟',
+            icon: "none",   
+            duration: 2000, 
+          })
+          return false;
+        }
+        this.musicSrc = e.currentTarget.dataset.music;
+        this.audioCtx.src = this.musicSrc;
+
+        this.bgShow = false;
+        this.musicShow = false;
+        this.maskShow = false;
+
+        this.audioCtx.play();
+        this.isPlay = true;
+      },
+      changeHead(){
+        this.hasHead = !this.hasHead;
+      },
+      diyBg(){
+        wx.chooseImage({
+          success (res) {
+            const tempFilePaths = res.tempFilePaths
+            if(res.tempFiles[0].size > 5*(Math.pow(2,20))){
+              wx.showToast({
+                title: '注意图片大小不能超过5M哦',
+                icon: "none",   
+                duration: 2000, 
+              })
+                return false;
+            }
+            // wx.uploadFile({
+            //   url: 'https://example.weixin.qq.com/upload', //仅为示例，非真实的接口地址
+            //   filePath: tempFilePaths[0],
+            //   name: 'file',
+            //   formData: {
+            //     'user': 'test'
+            //   },
+            //   success (res){
+            //     const data = res.data
+            //     //do something
+            //   }
+            // })
+          }
+        })
+      },
+      diyMusic(){
+        wx.chooseMessageFile({
+          count: 1,
+          type: 'all',
+          success (res) {
+            console.log(res)
+            let name = res.tempFiles[0].name;
+            if(
+              name.split(".")[1] != 'mp3' &&
+              name.split(".")[1] != 'wma' &&
+              name.split(".")[1] != 'avi' &&
+              name.split(".")[1] != 'rm' &&
+              name.split(".")[1] != 'rmvb'){
+              wx.showToast({
+                title: '只支持后缀为mp3，wma，avi，rm，rmvb其中一种的音频哦',
+                icon: "none",   
+                duration: 2000, 
+              })
+                return false;
+            }
+            if(res.tempFiles[0].size > 10*(Math.pow(2,20))){
+              wx.showToast({
+                title: '注意文件大小不能超过10M哦',
+                icon: "none",   
+                duration: 2000, 
+              })
+                return false;
+            }
+            const tempFilePaths = res.tempFiles[0]
+          }
+        })
       }
     };
   }
