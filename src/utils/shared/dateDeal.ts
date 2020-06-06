@@ -39,7 +39,6 @@ function dateFormat(dateOption: string): Object {
 }
 
 export function date(options: dateOptions) {
-  console.log(dateFormat(options.type));
   return dateFormat(options.type);
 }
 
@@ -127,8 +126,11 @@ export function arrowOnclick (type: string, date: string, direction: string): st
       resDate = `${leftDate}~${addDate(rightDate, type)}`
     }
   }
-  console.log(resDate)
   return resDate
+}
+
+export function addZero() {
+  
 }
 
 
