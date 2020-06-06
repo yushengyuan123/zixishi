@@ -293,81 +293,62 @@
     computed = {};
 
     onReady() {
-      wx.login({
-        success: function(res){
-          console.log(res)
-          let code = res.code;
+   
 
+          
 
-          RequestService.soeRequest('POST', {code, code}, '/user/login',
-            (fail) => {
-              console.log(fail);
-              console.log('失败');
-            },
-            (res) => {
-              console.log(res);
-              let Authorization = res.cookies[0].split(";")[0];
-              console.log(Authorization)
-              // 写入token
-              wx.setStorageSync('Authorization', Authorization);
-              console.log('成功');
-            })
+      // // 可以通过 wx.getSetting 先查询一下用户是否授权了 "scope.record" 这个 scope
+      //        wx.getLocation({
+      // type: 'wgs84',
+      // success (res) {
+      //   const lat = res.latitude
+      //   const lng = res.longitude
+      //   console.log(lat,lng)
+      // }
+      // })
 
+    }
 
-
-
-          // // 可以通过 wx.getSetting 先查询一下用户是否授权了 "scope.record" 这个 scope
-          //   wx.getSetting({
-          //     success(res) {
-          //       if (!res.authSetting['scope.userLocation']) {
-          //         wx.authorize({
-          //           scope: 'scope.userLocation',
-          //           success (res) {
-          //             console.log(res)
-          //             wx.getLocation({
-          //               type: 'wgs84',
-          //               success (res) {
-          //                 const lat = res.latitude
-          //                 const lng = res.longitude
-          //                 console.log(lat,lng)
-          //               }
-          //               })
-          //           }
-          //         })
-          //       }
-          //     }
-          //   })
-        },
-        fail: function() {
-          // fail
-        },
-        complete: function() {
-          // complete
-        }
-      })
+    onShow(){
     }
 
     onLoad(){
+      RequestService.wxLogin();
     }
 
     methods = {
       go(e) {
-        console.log(e)
-        if(e.currentTarget.dataset.classify.id == 1){
-          wx.showTabBar();
-          wepy.navigateTo({
-            url: '/pages/create'
+        console.log(RequestService)
+        if(RequestService.hasLogin){
+          if(e.currentTarget.dataset.classify.id == 1){
+            wx.showTabBar();
+            wepy.navigateTo({
+              url: '/pages/create'
+            })
+          }else if(e.currentTarget.dataset.classify.id == 2){
+            this.showModal = true;
+            this.isJoin = true;
+            wx.hideTabBar();
+          }else if(e.currentTarget.dataset.classify.id == 3) {
+            this.showModal = true;
+            this.isJoin = false;
+            wx.hideTabBar();
+          }
+        }else{
+          wx.showModal({
+            title: '提示',
+            content: '你还没有登录噢！',
+            success: function(res) {
+              if (res.confirm) {
+                wx.switchTab({
+                  url: '../pages/my'
+                })
+              } else if (res.cancel) {
+              console.log('用户点击取消')
+              }
+            }
           })
-        }else if(e.currentTarget.dataset.classify.id == 2){
-          this.showModal = true;
-          this.isJoin = true;
-           wx.hideTabBar();
-        }else if(e.currentTarget.dataset.classify.id == 3) {
-          this.showModal = true;
-          this.isJoin = false;
-           wx.hideTabBar();
         }
-
       },
       close(){
         this.showModal = false;
