@@ -21,7 +21,7 @@ export class differentMethods extends _request{
   async post(url, data) {
     const header = {
       'content-type': 'application/json',
-      'cookie': wx.getStorageSync("Authorization")
+      'cookie': 'JSESSIONID=ADB3032445E8EDC34CEEFFB4F4F90724'
     }
     const config = {
       url: baseUrl + url,
@@ -32,16 +32,16 @@ export class differentMethods extends _request{
     return await this.request(header, config)
   }
 
-  get(url) {
+  async get(url) {
     const header = {
-      'cookie': wx.getStorageSync("Authorization")
+      'cookie': 'JSESSIONID=ADB3032445E8EDC34CEEFFB4F4F90724'
     }
     const config = {
       url: baseUrl + url,
       method: 'GET',
       header: header
     }
-    this.request(header, config)
+    return await this.request(header, config)
   }
 
 }

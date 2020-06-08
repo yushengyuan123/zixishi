@@ -1,6 +1,6 @@
 import wepy from 'wepy'
 
-const baseUrl = 'http://qgailab.com:9998/api/bookstore';
+export const baseUrl = 'http://qgailab.com:9998/api/bookstore';
 
 /**wx.request服务封装 */
 export class RequestService {
@@ -187,8 +187,8 @@ export class RequestService {
             console.log(res);
             wx.showToast({
               title: '登陆成功啦~',
-              icon: "success",   
-              duration: 2000, 
+              icon: "success",
+              duration: 2000,
             })
             let Authorization = res.cookies[0].split(";")[0];
             console.log(Authorization)

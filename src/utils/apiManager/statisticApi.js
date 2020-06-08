@@ -13,7 +13,7 @@ class statisticApi extends differentMethods{
 
   //查询统计总数居
   async getTotal() {
-    return Response(await this.get('/statistic/searchStatistic'))
+    return Response(await this.get('/statistic/getCount'))
   }
 }
 

@@ -7,6 +7,7 @@ function errorNotice(code) {
 }
 
 export function Response(res) {
+  console.log(res)
   errorNotice(res.code)
   return res
 }
