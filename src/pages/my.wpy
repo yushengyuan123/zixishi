@@ -29,6 +29,7 @@
 
     .item-title {
       @include inline;
+      float: left;
       width: 20%;
       height: 100%;
       text-align: center;
@@ -47,17 +48,28 @@
       text-align: right;
       height: 100%;
       width: calc(80% - 28px);
+    }
 
       .user-icon {
-        display: block;
-        float: right;
-        height: 50px;
-        width: 50px;
-        border-radius: 50%;
-        background-color: #64C8BC;
-        overflow: hidden;
-      }
+      display: block;
+      float: right;
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+      background-color: #64C8BC;
+      overflow: hidden;
     }
+  }
+
+  .login-btn {
+    width: 200px;
+    height: 40px;
+    font-size: 16px;
+    background: none;
+    outline: none;
+  }
+  .login-btn::after {
+    border: none;
   }
 
 </style>
@@ -65,26 +77,20 @@
   <view class="my-con">
     <view class="title">我的</view>
     <view class="bottom-con">
-      <view
-        class="my-info"
-        wx:for="{{myList}}"
-        wx:key="{{item.id}}"
-        data-classify="{{item}}"
-        data-index='{{item.id}}'
-      >
-        <view class="item-title">{{item.title}}</view>
-        <view class="item-content">
-            <picker wx:if="{{item.id == 2}}" mode="selector" range="{{sexArr}}" value="{{index}}" @change="bindSexChange">
-            {{item.sex}}
-            </picker>
-            <picker wx:if="{{item.id == 3}}" mode="date" value="{{item.date}}" start="2015-09-01" end="2017-09-01" @change="bindDateChange">
-            {{item.date}}
-            </picker>
-          <open-data wx:if="{{!item.id}}" type="userAvatarUrl" class="user-icon"></open-data>
-          <open-data wx:if="{{(item.id == 1 && !hasName)}}" type="userNickName">{{item.content}}</open-data>
-          <view wx:if="{{(item.id == 1 && hasName)}}" @tap="changeName">{{item.content}}</view>
-          <view wx:if="{{item.id == 4}}" @tap="changeSign">{{item.content}}</view>
-        </view>
+      <view class="my-info">
+        <view class="item-title">头像</view>
+        <view class="item-content"><open-data type="userAvatarUrl" class="user-icon"></open-data></view>
+      </view>
+      <view class="my-info">
+        <view class="item-title">昵称</view>
+        <view class="item-content"><open-data type="userNickName"></open-data></view>
+      </view>
+      <view class="my-info">
+          <view class="item-title">签名</view>
+          <view @tap="changeSign" class="item-content">{{signature}}</view>
+      </view>
+      <view class="my-info" wx:if="{{!hasLogin}}">
+        <button class="login-btn" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">点击登录</button>
       </view>
     </view>
   </view>
@@ -92,7 +98,7 @@
 
 <script>
   import wepy from 'wepy';
-  // import { user } from '../utils/shared/wxlogin';
+  import { RequestService } from '../utils/shared/request.js';
 
   export default class my extends wepy.page {
     config = {
@@ -107,48 +113,20 @@
     events = {};
 
     data = {
-      hasName: true,
-      myList: [
-        {
-          id: 0,
-          title: '头像',
-          content: '',
-
-        },
-        {
-          id: 1,
-          title: '昵称',
-          content: '这个名称有八个字'
-        },
-        {
-          id: 2,
-          title: '性别',
-          sex: '女'
-        },
-        {
-          id: 3,
-          title: '生日',
-          date: '1998-02-17'
-        },
-        {
-          id: 4,
-          title: '签名',
-          content: '此人很懒，没有签名'
-        }
-      ],
-      sexArr: ["男","女"]
+      hasLogin: false,
+      signature: "...."
     };
 
     computed = {};
 
-    onReady() {
-      // user.getUser();
+    onShow() {
+      this.hasLogin = RequestService.hasLogin;
+    }
+
+    onLoad(){
     }
 
     methods = {
-      shouquan() {
-        user.getUser();
-      },
       bindSexChange(e){
         console.log(e.detail.value)
         this.myList[2].sex = this.sexArr[e.detail.value];
@@ -157,15 +135,30 @@
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.myList[3].date= e.detail.value
       },
-      changeName(){
-        wepy.navigateTo({
-          url: "/pages/changeInfo/changeInfo?mode=昵称"
-        })
-      },
       changeSign(){
-        wepy.navigateTo({
-          url: "/pages/changeInfo/changeInfo?mode=签名"
-        })
+        if(RequestService.hasLogin){
+          wepy.navigateTo({
+            url: "/pages/changeInfo/changeInfo?mode=签名"
+          })
+        }else {
+          wx.showModal({
+            title: '提示',
+            content: '你还没有登录噢！',
+            success: function (res) {
+              if (res.confirm) {
+                wx.switchTab({
+                  url: '../pages/my'
+                })
+              } else if (res.cancel) {
+                console.log('用户点击取消')
+              }
+            }
+          })
+        }
+      },
+      bindGetUserInfo(e){
+        console.log(e.detail.userInfo)
+        this.hasLogin = RequestService.firstLogin(e.detail.userInfo.avatarUrl, e.detail.userInfo.nickName);
       }
     };
   }
