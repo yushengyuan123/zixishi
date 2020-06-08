@@ -148,6 +148,7 @@
   import timePicker from '../components/timePicker';
   import { statisticMol } from '../utils/apiManager/statisticApi';
   import { options } from '../utils/chartoptions/chartoptions';
+  import { date, changeDateFormat} from '../utils/shared/dateDeal';
 
   let chart = null;
 
@@ -166,6 +167,7 @@
       }
     }
   };
+
 
   export default class statistic extends wepy.page {
     config = {
@@ -186,7 +188,9 @@
     events = {
       'returnDate': (data) => {
         console.log(data)
-        this.formatReqData(data.time, data.mode)
+        statisticMol.getLong(data.time).then(res => {
+          console.log(res)
+        })
       }
     };
 
@@ -200,9 +204,7 @@
     computed = {};
 
     onLoad() {
-      // statisticMol.getLong().then(res => {
-      //   console.log(res)
-      // })
+      this.initDate()
     }
 
     initChart(canvas, width, height, dpr) {
@@ -217,22 +219,15 @@
       return chart;
     }
 
-    formatReqData(date, mode) {
-      console.log(date)
-      switch (mode) {
-        case 'year': {
-          return
-        }
-        case 'month': {
-          return
-        }
-        case 'week': {
-          return date.replace('~', ' - ')
-        }
-        case 'day': {
-          return date
-        }
+    initDate() {
+      const reqData = {
+        'param': changeDateFormat(date({type: 'day'}).now.split(' ')[0]),
       }
+      console.log(reqData)
+      statisticMol.getLong(reqData).then(res => {
+        console.log(res)
+      })
     }
+
   };
 </script>

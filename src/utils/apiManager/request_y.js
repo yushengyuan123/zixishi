@@ -1,29 +1,47 @@
 import {baseUrl} from '../shared/request';
 
-let Authorization = ''
-
-
 export class _request {
-  request(methods, header, config) {
-    let baseConfig = {
-      url: baseUrl + url,
-      success (res) {
-        console.log(res.data)
+  request(header, config) {
+    return new Promise((resolve, reject) => {
+      let baseConfig = {
+        success: (res) => {
+          resolve(res.data)
+        },
+        reject: (res) => {
+          console.log('拒绝')
+        }
       }
-    }
-    baseConfig = Object.assign(baseConfig, config)
-    return new Promise(resolve => {
-      wx.request(config)
+      baseConfig = Object.assign(baseConfig, config)
+      wx.request(baseConfig)
     })
   }
 }
 
-class differentMethods extends _request{
-  constructor() {
-    super()
+export class differentMethods extends _request{
+  async post(url, data) {
+    const header = {
+      'content-type': 'application/json',
+      'cookie': wx.getStorageSync("Authorization")
+    }
+    const config = {
+      url: baseUrl + url,
+      method: 'POST',
+      data: JSON.stringify(data),
+      header: header
+    }
+    return await this.request(header, config)
   }
-  post() {
 
+  get(url) {
+    const header = {
+      'cookie': wx.getStorageSync("Authorization")
+    }
+    const config = {
+      url: baseUrl + url,
+      method: 'GET',
+      header: header
+    }
+    this.request(header, config)
   }
 
 }

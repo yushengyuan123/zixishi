@@ -1,15 +1,19 @@
-import {_request} from './request_y';
-import {responseIntercept} from './response';
+import {_request, differentMethods} from './request_y';
+import {Response} from './response';
 
-class statisticApi extends _request{
+class statisticApi extends differentMethods{
   constructor() {
     super()
   }
 
-  @responseIntercept()
+  //根据时间查询数据
   async getLong(data) {
-    console.log('我执行了')
-    return super.post('/statistic/searchStatistic', data)
+    return Response(await this.post('/statistic/searchStatistic', data))
+  }
+
+  //查询统计总数居
+  async getTotal() {
+    return Response(await this.get('/statistic/searchStatistic'))
   }
 }
 
