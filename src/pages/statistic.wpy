@@ -146,7 +146,7 @@
   import wepy from 'wepy';
   import * as echarts from '../utils/ec-canvas/echarts';
   import timePicker from '../components/timePicker';
-  import { statisticMol } from '../utils/apiManager/statisticApi';
+  // import { statisticMol } from '../utils/apiManager/statisticApi';
   import { options } from '../utils/chartoptions/chartoptions';
 
   let chart = null;

@@ -1,54 +1,13 @@
 import wepy from 'wepy'
 
-const baseUrl = 'http://qgailab.com:9998/api/bookstore';
+export const baseUrl = 'http://qgailab.com:9998/api/bookstore';
 
 /**wx.request服务封装 */
 export class RequestService {
 
-  static hasLogin = false;
+  static noLogin = true;
+  static signature = "";
 
-  /**
-   * create by wq
-   * info 错误信息
-   * callBack 回调函数
-   * errTip 自定义错误信息
-   */
-  static httpHandlerError(info, callBack, errTip) {
-    wepy.hideLoading()
-    /**请求成功，退出该函数 */
-    if ((info.statusCode >= 200 && info.statusCode <= 207) || info.statusCode === 304) {
-      return false
-    } else {
-      /**401 没有权限时，重新登录 */
-      if (info.statusCode === 401) {
-        wx.switchTab({
-          url: 'pages/my'
-        })
-      }
-      /**判断是否有自定义错误信息，如果有，优先使用自定义错误信息，其次曝出后台返回错误信息 */
-      let errorInfo = ''
-      if (errTip) {
-        errorInfo = errTip
-      } else {
-        console.log(info)
-        if (info.data.message) {
-          errorInfo = info.data.message
-        } else {
-          errorInfo = '服务器忙!'
-        }
-      }
-      wepy.showToast({
-        title: errorInfo,
-        icon: 'loading',
-        duration: 3000
-      })
-      /**发生错误信息时，如果有回调函数，则执行回调 */
-      if (callBack) {
-        callBack()
-      }
-      return true
-    }
-  }
   /**
    * create by wq
    *请求封装
@@ -59,7 +18,7 @@ export class RequestService {
    *sucFn 请求成功，执行该函数
    */
   static soeRequest(method, reqData, reqUrl, failFn, sucFn) {
-    if (!this.hasLogin) {
+    if (!wx.getStorageSync("Authorization")) {
       wx.showModal({
         title: '提示',
         content: '你还没有登录噢！',
@@ -75,33 +34,39 @@ export class RequestService {
       })
     }
 
-    console.log(wx.getStorageSync("Authorization"))
-    wepy.request({
-      /**header 如果需要验证token 可封装另外的getHeaders函数获取本地缓存token */
-      // header: this.getHeaders(),
-      header:
-        reqUrl == "/user/login" ?
-          {
-            'content-type': 'application/json'
-          }
-          :
-          {
-            'content-type': 'application/json',
-            'cookie': wx.getStorageSync("Authorization")
+    return new Promise(
+      (resolve, reject) => {
+        wepy.request({
+          /**header 如果需要验证token 可封装另外的getHeaders函数获取本地缓存token */
+          // header: this.getHeaders(),
+          header:
+            reqUrl == "/user/login" ?
+              {
+                'content-type': 'application/json'
+              }
+              :
+              {
+                'content-type': 'application/json',
+                'cookie': wx.getStorageSync("Authorization")
+              },
+          data: reqData,
+          url: baseUrl + reqUrl,
+          method: method,
+          success: (res)=> {
+            resolve(res)
+            if (reqUrl == "/user/login") {
+              sucFn(res);
+            } else {
+              sucFn(res.data);
+            }
           },
-      data: reqData,
-      url: baseUrl + reqUrl,
-      method: method,
-      complete: (res) => {
-        let error = this.httpHandlerError(res, failFn)
-        if (error) return;
-        if (reqUrl == "/user/login") {
-          sucFn(res);
-        } else {
-          sucFn(res.data);
-        }
+          error: (res)=> {
+            reject(res)
+          }
+        })
       }
-    })
+    )
+    
   };
 
   static wxLogin() {
@@ -118,7 +83,9 @@ export class RequestService {
               wx.getUserInfo({
                 success: function (res) {
                   console.log(res, "授权信息")
-                  that.hasLogin = true;
+                  console.log(wepy.$instance, "这是wepy")
+                  wx.setStorageSync("noLogin", false);
+                  that.noLogin = false;
                   let data = {
                     code: code,
                     icon: res.userInfo.avatarUrl,
@@ -131,15 +98,21 @@ export class RequestService {
                     },
                     (res) => {
                       console.log(res);
+                      // that.signature = res.data.data.signature;
+                      // wepy.$instance.globalData.signature = res.data.data.signature;
+                      wx.setStorageSync('signature', res.data.data.signature);
                       let Authorization = res.cookies[0].split(";")[0];
                       console.log(Authorization)
                       // 写入token
                       wx.setStorageSync('Authorization', Authorization);
+                      wx.setStorageSync('location', Authorization);
+                      wx.setStorageSync('head', res.data.data.icon);
                     })
                 }
               })
             } else {
-              that.hasLogin = false;
+              wx.setStorageSync("noLogin", true);
+              that.noLogin = true;
               wx.showModal({
                 title: '提示',
                 content: '你还没有登录噢！',
@@ -177,7 +150,8 @@ export class RequestService {
           icon: icon,
           nickName: nickName
         }
-        that.hasLogin = true;
+        wx.setStorageSync("noLogin", false);
+        that.noLogin = false;
         that.soeRequest('POST', data, '/user/login',
           (fail) => {
             console.log(fail);
@@ -194,6 +168,8 @@ export class RequestService {
             console.log(Authorization)
             // 写入token
             wx.setStorageSync('Authorization', Authorization);
+            wx.setStorageSync('signature', res.data.data.signature);
+            wx.setStorageSync('head', icon);
           })
       },
       fail: function () {

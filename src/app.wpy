@@ -1,70 +1,97 @@
 <style lang="less">
-  .container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-  }
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
 </style>
 
 <script>
-  import wepy from 'wepy';
-  import 'wepy-async-function';
+import wepy from 'wepy';
+import 'wepy-async-function';
 
-  export default class extends wepy.app {
-    config = {
-      pages: [
-        'pages/statistic',
-        'pages/my',
-        'pages/index',
-        'pages/paper/paper',
-        'pages/create',
-        'pages/roomspace',
-        'pages/shudong',
-        "pages/create/createzixishi",
-        "pages/room/roomspace",
-      ],
-      window: {
-        backgroundTextStyle: 'light',
-        navigationBarBackgroundColor: '#fff',
-        navigationBarTitleText: 'WeChat',
-        navigationBarTextStyle: 'black'
-      },
-      permission: {},
-      tabBar: {
-        'color': '#B3B3B3',
-        'selectedColor': '#64C8BC',
-        'borderStyle': 'white',
-        'backgroundColor': '#ffffff',
-        'list': [
-          {
-            'selectedIconPath': './images/navigator_zixishi.png',
-            'iconPath': './images/navigator_zixishi_negative.png',
-            'pagePath': 'pages/index',
-            'text': '自习室'
-          },
-          {
-            'selectedIconPath': './images/statics_choose.png',
-            'iconPath': './images/statics_nagative.png',
-            'pagePath': 'pages/statistic',
-            'text': '数据统计'
-          },
-          {
-            'selectedIconPath': './images/shudong_choose.png',
-            'iconPath': './images/shudong_nagative.png',
-            'pagePath': 'pages/shudong',
-            'text': '树洞'
-          },
-          {
-            'selectedIconPath': './images/my_choose.png',
-            'iconPath': './images/my_nagative.png',
-            'pagePath': 'pages/my',
-            'text': '我的'
-          }
-        ]
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/index',
+      'pages/statistic',
+      'pages/my',
+      'pages/paper/paper',
+      'pages/create',
+      'pages/roomspace',
+      'pages/shudong',
+      'pages/create/createzixishi',
+      'pages/room/roomspace',
+      'pages/changeInfo/changeInfo'
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTitleText: 'WeChat',
+      navigationBarTextStyle: 'black'
+    },
+    permission: {
+      'scope.userLocation': {
+        desc: '你的位置信息将用于小程序位置接口的效果展示' 
       }
-    };
+    },
+    requiredBackgroundModes : ["autio"],
+    tabBar: {
+      color: '#B3B3B3',
+      selectedColor: '#64C8BC',
+      borderStyle: 'white',
+      backgroundColor: '#ffffff',
+      list: [
+        {
+          selectedIconPath: './images/navigator_zixishi.png',
+          iconPath: './images/navigator_zixishi_negative.png',
+          pagePath: 'pages/index',
+          text: '自习室'
+        },
+        {
+          selectedIconPath: './images/statics_choose.png',
+          iconPath: './images/statics_nagative.png',
+          pagePath: 'pages/statistic',
+          text: '数据统计'
+        },
+        {
+          selectedIconPath: './images/shudong_choose.png',
+          iconPath: './images/shudong_nagative.png',
+          pagePath: 'pages/shudong',
+          text: '树洞'
+        },
+        {
+          selectedIconPath: './images/my_choose.png',
+          iconPath: './images/my_nagative.png',
+          pagePath: 'pages/my',
+          text: '我的'
+        }
+      ]
+    }
+  };
+
+  globalData = {
+    noLogin: true
+  };
+
+  setWatching(key, method) {
+    this.globalData = { noLogin: true, signature: '' };
+    let obj = this.globalData;
+
+    Object.defineProperty(obj, key, {
+      configurable: true,
+      enumerable: true,
+      set: function(value) {
+        this._name = value;
+        method(value);
+      },
+      get: function() {
+        return this._name;
+      }
+    });
   }
+}
 </script>

@@ -17,6 +17,7 @@
   "author": "Yu Shengyuan <1749238278@qq.com>",
   "license": "MIT",
   "dependencies": {
+    "sass": "^1.26.8",
     "wepy": "^1.7.2",
     "wepy-async-function": "^1.4.4",
     "wepy-com-toast": "^1.0.2"

@@ -1,77 +1,76 @@
 <style lang="scss" scoped>
-  @import "../utils/css/shareCss";
+@import '../utils/css/shareCss';
 
-  .my-con {
-    width: 100%;
-    height: 100vh;
-    background-image: url('https://s1.ax1x.com/2020/05/15/YrNmRA.png');
-    background-attachment: fixed;
-    background-size: cover;
+.my-con {
+  width: 100%;
+  height: 100vh;
+  background-image: url('https://s1.ax1x.com/2020/05/15/YrNmRA.png');
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.title {
+  @include title;
+  padding-top: 34px;
+}
+
+.bottom-con {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.my-info {
+  height: 50px;
+  width: 100%;
+  border-bottom: 1px solid rgba(237, 240, 244, 1);
+  padding: 5px 0;
+  line-height: 50px;
+  font-size: 0;
+
+  .item-title {
+    @include inline;
+    float: left;
+    width: 20%;
+    height: 100%;
+    text-align: center;
+    font: {
+      size: 16px;
+    }
   }
 
-  .title {
-    @include title;
-    padding-top: 34px;
+  .item-content {
+    @include inline;
+    padding-right: 28px;
+    color: rgba(77, 77, 77, 0.918);
+    font: {
+      size: 16px;
+    }
+    text-align: right;
+    height: 100%;
+    width: calc(80% - 28px);
   }
 
-  .bottom-con {
-    width: 100%;
-    margin-top: 20px;
-  }
-
-  .my-info {
+  .user-icon {
+    display: block;
+    float: right;
     height: 50px;
-    width: 100%;
-    border-bottom: 1px solid rgba(237, 240, 244, 1);
-    padding: 5px 0;
-    line-height: 50px;
-    font-size: 0;
-
-    .item-title {
-      @include inline;
-      float: left;
-      width: 20%;
-      height: 100%;
-      text-align: center;
-      font: {
-        size: 16px;
-      };
-    }
-
-    .item-content {
-      @include inline;
-      padding-right: 28px;
-      color: rgba(77, 77, 77, 0.918);
-      font: {
-        size: 16px;
-      };
-      text-align: right;
-      height: 100%;
-      width: calc(80% - 28px);
-    }
-
-      .user-icon {
-      display: block;
-      float: right;
-      height: 50px;
-      width: 50px;
-      border-radius: 50%;
-      background-color: #64C8BC;
-      overflow: hidden;
-    }
+    width: 50px;
+    border-radius: 50%;
+    background-color: #64c8bc;
+    overflow: hidden;
   }
+}
 
-  .login-btn {
-    width: 200px;
-    height: 40px;
-    font-size: 16px;
-    background: none;
-    outline: none;
-  }
-  .login-btn::after {
-    border: none;
-  }
-
+.login-btn {
+  width: 200px;
+  height: 40px;
+  font-size: 16px;
+  background: none;
+  outline: none;
+}
+.login-btn::after {
+  border: none;
+}
 </style>
 <template>
   <view class="my-con">
@@ -79,17 +78,21 @@
     <view class="bottom-con">
       <view class="my-info">
         <view class="item-title">头像</view>
-        <view class="item-content"><open-data type="userAvatarUrl" class="user-icon"></open-data></view>
+        <view class="item-content">
+          <open-data type="userAvatarUrl" class="user-icon"></open-data>
+        </view>
       </view>
       <view class="my-info">
         <view class="item-title">昵称</view>
-        <view class="item-content"><open-data type="userNickName"></open-data></view>
+        <view class="item-content">
+          <open-data type="userNickName"></open-data>
+        </view>
       </view>
-      <view class="my-info">
-          <view class="item-title">签名</view>
-          <view @tap="changeSign" class="item-content">{{signature}}</view>
+      <view class="my-info" @tap="changeSign" wx:if="{{!noLogin}}">
+        <view class="item-title">签名</view>
+        <view class="item-content">{{signature}}</view>
       </view>
-      <view class="my-info" wx:if="{{!hasLogin}}">
+      <view class="my-info" wx:if="{{noLogin}}">
         <button class="login-btn" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">点击登录</button>
       </view>
     </view>
@@ -97,70 +100,65 @@
 </template>
 
 <script>
-  import wepy from 'wepy';
-  import { RequestService } from '../utils/shared/request.js';
+import wepy from 'wepy';
+import { RequestService } from '../utils/shared/request.js';
 
-  export default class my extends wepy.page {
-    config = {
-      navigationBarTitleText: '我的'
-    };
-    components = {};
+export default class my extends wepy.page {
+  config = {
+    navigationBarTitleText: '我的'
+  };
+  components = {};
 
-    mixins = [];
+  mixins = [];
 
-    watch = {};
+  watch = {};
 
-    events = {};
+  events = {};
 
-    data = {
-      hasLogin: false,
-      signature: "...."
-    };
+  data = {
+    noLogin: true,
+    signature: ''
+  };
 
-    computed = {};
+  computed = {};
 
-    onShow() {
-      this.hasLogin = RequestService.hasLogin;
+  onShow() {
+    let that = this;
+    if (wx.getStorageSync('Authorization')) {
+      this.signature = wx.getStorageSync('signature');
+      this.noLogin = Boolean(wx.getStorageSync('noLogin'));
     }
-
-    onLoad(){
-    }
-
-    methods = {
-      bindSexChange(e){
-        console.log(e.detail.value)
-        this.myList[2].sex = this.sexArr[e.detail.value];
-      },
-      bindDateChange(e) {
-        console.log('picker发送选择改变，携带值为', e.detail.value)
-        this.myList[3].date= e.detail.value
-      },
-      changeSign(){
-        if(RequestService.hasLogin){
-          wepy.navigateTo({
-            url: "/pages/changeInfo/changeInfo?mode=签名"
-          })
-        }else {
-          wx.showModal({
-            title: '提示',
-            content: '你还没有登录噢！',
-            success: function (res) {
-              if (res.confirm) {
-                wx.switchTab({
-                  url: '../pages/my'
-                })
-              } else if (res.cancel) {
-                console.log('用户点击取消')
-              }
-            }
-          })
-        }
-      },
-      bindGetUserInfo(e){
-        console.log(e.detail.userInfo)
-        this.hasLogin = RequestService.firstLogin(e.detail.userInfo.avatarUrl, e.detail.userInfo.nickName);
-      }
-    };
   }
-  ;
+
+  onLoad() {}
+
+  methods = {
+    bindSexChange(e) {
+      console.log(e.detail.value);
+      this.myList[2].sex = this.sexArr[e.detail.value];
+    },
+    bindDateChange(e) {
+      console.log('picker发送选择改变，携带值为', e.detail.value);
+      this.myList[3].date = e.detail.value;
+    },
+    changeSign() {
+      wx.navigateTo({
+        url: `/pages/changeInfo/changeInfo?signature=${this.signature}`
+      });
+    },
+    bindGetUserInfo(e) {
+      console.log(e.detail.userInfo);
+      RequestService.firstLogin(
+        e.detail.userInfo.avatarUrl,
+        e.detail.userInfo.nickName
+      )
+      this.noLogin = false;
+      this.signature = wx.getStorageSync('signature');
+      setTimeout(() => {
+        this.noLogin = false;
+        this.signature = wx.getStorageSync('signature');
+      }, 1000);
+    }
+  };
+}
 </script>
