@@ -1,6 +1,6 @@
 import wepy from 'wepy'
 
-export const baseUrl = 'http://qgailab.com:9998/api/bookstore';
+export const baseUrl = 'https://qgailab.com:9998/api/bookstore';
 
 /**wx.request服务封装 */
 export class RequestService {

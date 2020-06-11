@@ -22,15 +22,15 @@ function dateFormat(dateOption: string): Object {
   const month = date.getMonth();
   const year = date.getFullYear();
   let resDate = {
-    now: `${year}-${month}-${day}`,
-    future: `${year}-${month}-${day}`
+    now: `${year}-${month + 1}-${day}`,
+    future: `${year}-${month + 1}-${day}`
   };
   switch (dateOption) {
     case 'day': {
       return resDate;
     }
     case 'week': {
-      resDate.future = `${year}-${month}-${week}`;
+      resDate.future = `${year}-${month + 1}-${week}`;
       return resDate;
     }
     case 'month': {
