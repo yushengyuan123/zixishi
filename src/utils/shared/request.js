@@ -63,6 +63,10 @@ export class RequestService {
    *sucFn 请求成功，执行该函数
    */
   static soeRequest(method, reqData, reqUrl, failFn, sucFn) {
+    wx.showLoading({
+      title: "请稍等...",
+      mask: true
+    })
     if (this.noLogin) {
       wx.showModal({
         title: '提示',
@@ -96,6 +100,7 @@ export class RequestService {
       url: baseUrl + reqUrl,
       method: method,
       complete: (res) => {
+        wx.hideLoading();
         let error = this.httpHandlerError(res, failFn)
         if (error) return;
         if (res.data.code === 0 || res.data.code === "0") {
@@ -122,6 +127,10 @@ export class RequestService {
   };
 
   static wxLogin() {
+    wx.showLoading({
+      title: "登陆中...",
+      mask: true
+    })
     let that = this;
     wx.login({
       success: function (res) {
@@ -150,8 +159,7 @@ export class RequestService {
                     },
                     (res) => {
                       console.log(res);
-                      // that.signature = res.data.data.signature;
-                      // wepy.$instance.globalData.signature = res.data.data.signature;
+                      wx.hideLoading();
                       wx.setStorageSync('signature', res.data.data.signature);
                       let Authorization = res.cookies[0].split(";")[0];
                       console.log(Authorization)
@@ -163,6 +171,7 @@ export class RequestService {
                 }
               })
             } else {
+              wx.hideLoading();
               wx.setStorageSync("noLogin", true);
               that.noLogin = true;
               wx.showModal({
@@ -210,6 +219,7 @@ export class RequestService {
             console.log('失败');
           },
           (res) => {
+            wx.hideLoading();
             console.log(res);
             wx.showToast({
               title: '登陆成功啦~',
