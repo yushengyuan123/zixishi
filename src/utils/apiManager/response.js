@@ -1,17 +1,18 @@
-import alert from '../wx_alert/wx_alert';
-function errorNotice(code) {
-  if (code == 401) {
-    console.log('请登陆后操作')
-    wx.clearStorage()
-    return false
-  } else if (code == -1) {
-    console.log('错误代码-1')
+import { failNotice } from '../wx_alert/wx_alert';
+function errorNotice(res) {
+  if (res.code == 0 || res.code == 401) {
+    wx.setStorageSync("noLogin", true);
+    wx.switchTab({
+      url: 'pages/my'
+    })
+  } else if (res.code == -1) {
+    failNotice(res.message)
     return false
   }
 }
 
 export function Response(res) {
-  errorNotice(res.code)
+  errorNotice(res)
   return res
 }
 
