@@ -85,7 +85,7 @@
         };
 
         data = {
-          time: changeDateFormat(date({type: 'day'}).now.split(' ')[0]),
+          time: changeDateFormat(date({type: 'day'}).future.split(' ')[0]),
           choose: 'day'
         };
 

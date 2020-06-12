@@ -1,4 +1,4 @@
-
+import {failNotice} from '../wx_alert/wx_alert'
 
 interface dateOptions {
   type: string
@@ -17,8 +17,8 @@ export function changeDateFormat(date: string) {
 
 function dateFormat(dateOption: string): Object {
   const date = new Date();
-  const day = date.getDate();
-  const week = day + 7;
+  const day = date.getDate() - 6;
+  const week = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();
   let resDate = {
@@ -27,6 +27,7 @@ function dateFormat(dateOption: string): Object {
   };
   switch (dateOption) {
     case 'day': {
+      resDate.future = `${year}-${month + 1}-${week}`
       return resDate;
     }
     case 'week': {
@@ -38,7 +39,7 @@ function dateFormat(dateOption: string): Object {
       return resDate;
     }
     case 'year': {
-      resDate.future = `${year + 1}`;
+      resDate.future = `${year}`;
       return resDate;
     }
     default: {
@@ -51,51 +52,75 @@ export function date(options: dateOptions) {
   return dateFormat(options.type);
 }
 
-function addDate<T>(date: string, dateSort: string): T {
+function addDate<T>(date: string, dateSort: string): any {
   const dateObj = {
     year: Number(date.split('-')[0]),
     month: Number(date.split('-')[1]),
     day: Number(date.split('-')[2])
   };
+  const compareNow = new Date()
   let resDate;
   switch (dateSort) {
     case 'day': {
       //获取本月有多少天
-      const hasDay = new Date(dateObj.year, dateObj.month, 0).getDate();
-      if (dateObj.day + 1 > hasDay) {
-        if (dateObj.month + 1 > 12) {
-          resDate = `${dateObj.year + 1}-${1}-${1}`;
-        } else {
-          resDate = `${dateObj.year}-${dateObj.month + 1}-${1}`;
-        }
+      if (compareNow.getDate() < dateObj.day + 1
+        && compareNow.getMonth() + 1  === dateObj.month) {
+        resDate = `${dateObj.year}-${dateObj.month}-${dateObj.day}`;
+        failNotice('不能选择未来时间')
       } else {
-        resDate = `${dateObj.year}-${dateObj.month}-${dateObj.day + 1}`;
+        const hasDay = new Date(dateObj.year, dateObj.month, 0).getDate();
+        if (dateObj.day + 1 > hasDay) {
+          if (dateObj.month + 1 > 12) {
+            resDate = `${dateObj.year + 1}-${1}-${1}`;
+          } else {
+            resDate = `${dateObj.year}-${dateObj.month + 1}-${1}`;
+          }
+        } else {
+          resDate = `${dateObj.year}-${dateObj.month}-${dateObj.day + 1}`;
+        }
       }
-      return resDate;
+      return resDate
     }
     case 'week': {
-      const hasDay = new Date(dateObj.year, dateObj.month, 0).getDate();
-      if (dateObj.day + 7 > hasDay) {
-        if (dateObj.month + 1 > 12) {
-          resDate = `${dateObj.year + 1}-${1}-${7 - (hasDay - dateObj.day)}`;
-        } else {
-          resDate = `${dateObj.year}-${dateObj.month + 1}-${7 - (hasDay - dateObj.day)}`;
-        }
+      if (compareNow.getDate() < dateObj.day + 7
+      && compareNow.getMonth() + 1 === dateObj.month) {
+        resDate = `${dateObj.year}-${dateObj.month}-${dateObj.day}`;
+        failNotice('不能选择未来时间')
       } else {
-        resDate = `${dateObj.year}-${dateObj.month}-${dateObj.day + 7}`;
+        const hasDay = new Date(dateObj.year, dateObj.month, 0).getDate();
+        if (dateObj.day + 7 > hasDay) {
+          if (dateObj.month + 1 > 12) {
+            resDate = `${dateObj.year + 1}-${1}-${7 - (hasDay - dateObj.day)}`;
+          } else {
+            resDate = `${dateObj.year}-${dateObj.month + 1}-${7 - (hasDay - dateObj.day)}`;
+          }
+        } else {
+          resDate = `${dateObj.year}-${dateObj.month}-${dateObj.day + 7}`;
+        }
       }
       return resDate;
     }
     case 'month': {
-      if (dateObj.month + 1 > 12) {
-        resDate = `${dateObj.year + 1}-${1}`;
+      if (compareNow.getMonth() < dateObj.month + 1
+        && compareNow.getFullYear() === dateObj.year) {
+        resDate = `${dateObj.year}-${dateObj.month}`;
+        failNotice('不能选择未来时间')
       } else {
-        resDate = `${dateObj.year}-${dateObj.month + 1}`;
+        if (dateObj.month + 1 > 12) {
+          resDate = `${dateObj.year + 1}-${1}`;
+        } else {
+          resDate = `${dateObj.year}-${dateObj.month + 1}`;
+        }
       }
       return resDate;
     }
     case 'year': {
-      resDate = `${dateObj.year + 1}`;
+      if (compareNow.getFullYear() < dateObj.year + 1) {
+        resDate = `${dateObj.year}`;
+        failNotice('不能选择未来时间')
+      } else {
+        resDate = `${dateObj.year + 1}`;
+      }
       return resDate;
     }
     default: {
@@ -196,19 +221,28 @@ export function arrowOnclick(type: string, date: string, direction: string): str
   let rightDate = date.split('~')[1] !== undefined
     ? date.split('~')[1] : null;
   let resDate;
-  if (direction === 'left') {
-    if (rightDate === null) {
-      resDate = `${reduceDate(leftDate, type)}`;
+  if (type !== 'week') {
+    if (direction === 'left') {
+      if (rightDate === null) {
+        resDate = `${reduceDate(leftDate, type)}`;
+      } else {
+        resDate = `${reduceDate(leftDate, type)}~${rightDate}`;
+      }
     } else {
-      resDate = `${reduceDate(leftDate, type)}~${rightDate}`;
+      if (rightDate === null) {
+        resDate = `${addDate(leftDate, type)}`;
+      } else {
+        resDate = `${leftDate}~${addDate(rightDate, type)}`;
+      }
     }
   } else {
-    if (rightDate === null) {
-      resDate = `${addDate(leftDate, type)}`;
+    if (direction === 'left') {
+      resDate = `${reduceDate(leftDate, type)}~${reduceDate(rightDate, type)}`;
     } else {
-      resDate = `${leftDate}~${addDate(rightDate, type)}`;
+      resDate = `${addDate(leftDate, type)}~${addDate(rightDate, type)}`;
     }
   }
+
   resDate = filter(resDate, type);
   return resDate;
 }
