@@ -5,6 +5,7 @@
     min-height: 100vh;
     background: rgba(245, 245, 245, 1);
     padding-bottom: rpx(100);
+    overflow-x: hidden;
   }
 
   .top-con {
@@ -188,10 +189,12 @@
 
     events = {
       'returnDate': (data) => {
-        statisticMol.getLong(data.time).then(res => {
+        const reqData = {
+          param: data.time
+        }
+        statisticMol.getLong(reqData).then(res => {
           if (res.code == 1) {
             const option = options(res.data.times)
-            console.log(option)
             chart.setOption(option)
           }
         })
@@ -223,11 +226,9 @@
       });
       canvas.setChart(chart);
       const reqData = {
-        'param': changeDateFormat(date({ type: 'day' }).now.split(' ')[0]),
+        'param': changeDateFormat(date({ type: 'day' }).future.split(' ')[0]),
       }
-      console.log('我执行了')
       statisticMol.getLong(reqData).then(res => {
-        console.log(res)
         if (res.code == 1) {
           const option = options(res.data.times)
           chart.setOption(option)

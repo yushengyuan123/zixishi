@@ -149,7 +149,7 @@
 
   export default class shudong extends wepy.page {
     config = {
-      navigationBarTitleText: ''
+      navigationBarTitleText: '树洞'
     };
 
     components = {};
