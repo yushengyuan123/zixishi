@@ -168,6 +168,10 @@
         });
       },
       bindGetUserInfo(e) {
+        wx.showLoading({
+          title: "登陆中...",
+          mask: true
+        })
         let that = this;
         console.log(e.detail.userInfo);
         RequestService.firstLogin(
