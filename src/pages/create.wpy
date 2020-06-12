@@ -90,6 +90,7 @@
 <script>
 import wepy from 'wepy';
 import { RequestService } from '../utils/shared/request';
+import { isNull } from '../utils/shared/isNull';
 
 export default class navigator extends wepy.page {
   components = {};
@@ -176,6 +177,15 @@ export default class navigator extends wepy.page {
     },
     createRoom() {
       let that = this;
+      if(isNull(this.description) || isNull(this.roomName)){
+        wx.showToast({
+          title: '(ŎдŎ；)两个输入框都不能为空噢...',
+          icon: 'none',
+          duration: 2000
+        });
+        return false;
+      }
+
        // 可以通过 wx.getSetting 先查询一下用户是否授权了 "scope.record" 这个 scope
         wx.getLocation({
         type: 'wgs84',
