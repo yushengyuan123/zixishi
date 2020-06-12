@@ -49,7 +49,6 @@
         view {
           @include inline;
           height: 100%;
-          color: #64C8BC;
           font: {
             size: 15px;
           };
@@ -101,6 +100,14 @@
     height: 360px;
   }
 
+  .upNumber {
+    color: #64C8BC;
+  }
+
+  .downNumber {
+    color: #FF8A8A;
+  }
+
 
 </style>
 <template>
@@ -113,11 +120,10 @@
           <image
             src="{{todayPercent > 0 ? '../images/up.png' : '../images/down.png'}}"
             class="up"
-            style="{{todayPercent > 0 ? 'color: green' : 'color: red'}}"
           >
           </image>
-          <view>{{todayPercent}}%</view>
-          <image src="../images/rank.png" class="rank-png"/>
+          <view class="{{todayPercent > 0 ? 'upNumber' : 'downNumber'}}">{{todayPercent}}%</view>
+<!--          <image src="../images/rank.png" class="rank-png"/>-->
         </view>
       </view>
 
@@ -125,9 +131,9 @@
         <view class="average-title">日均时长</view>
         <view class="time-con">{{averageCount}}分钟</view>
         <view class="rank">
-          <image src="{{averageCount > 0 ? '../images/up.png' : '../images/down.png'}}" class="up"></image>
-          <view>{{averagePercent}}%</view>
-          <image src="../images/rank.png" class="rank-png"/>
+          <image src="{{averagePercent > 0 ? '../images/up.png' : '../images/down.png'}}" class="up"></image>
+          <view class="{{averagePercent > 0 ? 'upNumber' : 'downNumber'}}">{{averagePercent}}%</view>
+<!--          <image src="../images/rank.png" class="rank-png"/>-->
         </view>
       </view>
 

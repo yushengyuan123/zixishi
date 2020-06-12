@@ -40,6 +40,7 @@ export const options = function(refreshData) {
     ],
     yAxis: [
       {
+        name: '小时/h',
         type: 'value'
       }
     ],
