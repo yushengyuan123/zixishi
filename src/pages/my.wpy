@@ -143,7 +143,7 @@
     onShow() {
       let that = this;
       if (wx.getStorageSync('Authorization')) {
-        this.signature = wx.getStorageSync('signature');
+        this.signature = wx.getStorageSync('signature') ? wx.getStorageSync('signature') : "用户很懒，什么也没留下";
         this.noLogin = Boolean(wx.getStorageSync('noLogin'));
         this.$apply();
       }

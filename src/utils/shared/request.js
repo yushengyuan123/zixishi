@@ -118,7 +118,7 @@ export class RequestService {
         }else {
           wepy.showToast({
             title: res.data.message,
-            icon: 'loading',
+            icon: 'none',
             duration: 2000
           })
         }

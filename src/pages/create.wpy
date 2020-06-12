@@ -19,6 +19,7 @@
     input {
       height: rpx(85);
       width: 100%;
+      padding-left: 10px;
       border: 1px solid rgba(225, 228, 232, 1);
       border-radius: 4px;
     }
@@ -210,9 +211,11 @@ export default class navigator extends wepy.page {
             },
             res => {
               console.log('成功数据', res);
-              wepy.navigateTo({
+              that.description = "";
+              that.roomName = "";
+              wx.redirectTo({
                 url: `/pages/roomspace?id=${res.data}`
-              });
+              })
             }
           );
         },

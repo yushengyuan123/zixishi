@@ -213,7 +213,7 @@
     <view
       class="background-list"
       wx:for="{{bg_list}}"
-      wx:key="{{id}}"
+      wx:key="{{bg_list.id}}"
       data-classify="{{item}}"
       data-url='{{item.url}}'
       data-isLock="{{item.isLock}}"
@@ -243,7 +243,7 @@
     <view
       class="music-list"
       wx:for="{{musicList}}"
-      wx:key="{{id}}"
+      wx:key="{{musicList.id}}"
       data-classify="{{item}}"
       data-music='{{item.src}}'
       data-isLock="{{item.isLock}}"
@@ -467,6 +467,8 @@
     onLoad(options){
       let that = this;
       this.roomId = options.id;
+      wx.hideToast();
+      wx.hideLoading();
       RequestService.soeRequest('GET', '', '/user/info',
         (fail) => {
           console.log(fail);
@@ -538,11 +540,13 @@
               clearInterval(that.heartTime);
               clearInterval(that.lastTime);
               clearInterval(that.headMove);
-              wx.showToast({
-                title: `恭喜你，获得了${increase}能量值啦！继续加油鸭~`,
-                icon: "none",   
-                duration: 2000, 
-              })
+              setTimeout(() => {
+                wx.showToast({
+                  title: `恭喜你，获得了${increase}能量值啦！继续加油鸭~`,
+                  icon: "none",   
+                  duration: 2000, 
+                })
+              }, 2000);
             }else {
               wx.showToast({
                 title: res.message,
@@ -694,7 +698,17 @@
           success (res) {
             console.log(res)
             const tempFilePaths = res.tempFilePaths;
-            that.bgSrc = res.tempFilePaths[0];
+            // that.urlTobase64(res.tempFilePaths[0]);
+            wx.getFileSystemManager().readFile({
+              filePath: res.tempFilePaths[0], //选择图片返回的相对路径
+              encoding: 'base64', //编码格式
+              success: res => { //成功的回调
+                console.log('data:image/png;base64,' + res.data)
+                that.bgSrc = 'data:image/png;base64,' + res.data;
+              }
+            })
+
+            // that.bgSrc = res.tempFilePaths[0];
             that.bgShow = false;
             that.maskShow = false;
             that.$apply();
