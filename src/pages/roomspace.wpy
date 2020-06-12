@@ -63,17 +63,18 @@
       border-radius: 50%;
       background-size: cover;
       background-repeat: no-repeat;
-      box-shadow: 2px 2px 5px rgba(94, 93, 93, 0.425);
+      box-shadow: rgba(247, 248, 248, 0.8) 0px 0px 10px inset;
       z-index: 1;
     }
 
     .other-head-icon-con{
+      transition: left 2s, top 2s, right 2s;
       display: inline-block;
       position: absolute;
       border-radius: 50%;
       background-size: cover;
       background-repeat: no-repeat;
-      box-shadow: 2px 2px 5px rgba(94, 93, 93, 0.425);
+      box-shadow: rgba(247, 248, 248, 0.8) 0px 0px 10px inset;
       z-index: 1;
     }
   }
@@ -193,7 +194,7 @@
         wx:key="{{item.id}}"
         data-classify="{{item}}"
         data-url='{{item.url}}'
-        style="background-image: url({{item.url}});{{item.style}}"
+        style="background-image: url({{item.url}});{{item.style}};{{(item.id == 2 || item.id == 5)? 'right':'left'}}:{{headLeft[item.id].value}}px;top:{{headTop[item.id].value}}px;"
       >
       </view>
     </view>
@@ -256,7 +257,7 @@
         class="lock"
         wx:if="{{item.isLock}}"
       >
-      {{item.name}}<span style="color: #49958C">{{item.src === musicSrc? '(当前使用)': ''}}</span>
+      {{item.name}}<span style="color: #49958C">{{item.src === musicSrc? '(now)': ''}}</span>
     </view>
     <view @tap.stop="diyMusic">
       自定义
@@ -376,29 +377,52 @@
       ],
       headImgList: [
         {
+          id: 0,
           url: "https://s1.ax1x.com/2020/05/30/tMT6lF.png",
-          style: "width:80px;height:80px;top:-20px;left:15px;"
+          style: "width:50px;height:50px;"
         },
         {
+          id: 1,
           url: "https://s1.ax1x.com/2020/05/30/tMT6lF.png",
-          style: "width:65px;height:65px;top:-70px;left:200px;"
+          style: "width:65px;height:65px;"
         },
         {
+          id: 2,
           url: "https://s1.ax1x.com/2020/05/30/tMT6lF.png",
-          style: "width:40px;height:40px;top:20px;right:40px;"
+          style: "width:40px;height:40px;"
         },
           {
+          id: 3,
           url: "https://s1.ax1x.com/2020/05/30/tMT6lF.png",
-          style: "width:40px;height:40px;top:150px;left:50px;"
+          style: "width:60px;height:60px;"
         },
         {
+          id: 4,
           url: "https://s1.ax1x.com/2020/05/30/tMT6lF.png",
-          style: "width:60px;height:60px;top:170px;left:180px;"
+          style: "width:50px;height:50px;"
         },
         {
+          id: 5,
           url: "https://s1.ax1x.com/2020/05/30/tMT6lF.png",
-          style: "width:50px;height:50px;top:140px;right:30px;"
+          style: "width:80px;height:80px;"
         },
+      ],
+      x: "left",
+      headLeft:[
+        {value: 20},
+        {value: 200},
+        {value: 40},
+        {value: 40},
+        {value: 130},
+        {value: 40},
+      ],
+      headTop:[
+        {value: -45},
+        {value: -70},
+        {value: 20},
+        {value: 120},
+        {value: 170},
+        {value: 140},
       ]
     };
 
@@ -474,6 +498,28 @@
             })
           }
       })
+
+      let count = 0;
+      let left=20;
+      let top=20;
+      this.headMove = setInterval(() => {
+        for(let i = 0; i < that.headImgList.length; i++){
+          if(count%2 == 0){
+            if(i%2 == 0){
+              that.headLeft[i].value = that.headLeft[i].value+left;
+            }else{
+              that.headTop[i].value = that.headTop[i].value-top;
+            }
+          }else{
+            if(i%2 == 0){
+              that.headLeft[i].value = that.headLeft[i].value-left;
+            }else{
+              that.headTop[i].value = that.headTop[i].value+top;
+            }
+          }
+        }
+        count++;
+      }, 2000);
     }
 
     onUnload(){
@@ -491,6 +537,7 @@
               that.audioCtx.stop();
               clearInterval(that.heartTime);
               clearInterval(that.lastTime);
+              clearInterval(that.headMove);
               wx.showToast({
                 title: `恭喜你，获得了${increase}能量值啦！继续加油鸭~`,
                 icon: "none",   
@@ -561,7 +608,7 @@
               
               for(let i = 1; i < that.headImgList.length; i++){
                 var temp_str= 'headImgList['+ i + '].url';
-                if(wx.getStorageSync("head") != that.headImgList[i].url){
+                if(wx.getStorageSync("head") !== res.data[i]){
                   that.setData({
                     [temp_str]: res.data[i]
                   });
