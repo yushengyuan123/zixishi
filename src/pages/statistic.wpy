@@ -191,6 +191,7 @@
         statisticMol.getLong(data.time).then(res => {
           if (res.code == 1) {
             const option = options(res.data.times)
+            console.log(option)
             chart.setOption(option)
           }
         })
@@ -224,7 +225,9 @@
       const reqData = {
         'param': changeDateFormat(date({ type: 'day' }).now.split(' ')[0]),
       }
+      console.log('我执行了')
       statisticMol.getLong(reqData).then(res => {
+        console.log(res)
         if (res.code == 1) {
           const option = options(res.data.times)
           chart.setOption(option)
