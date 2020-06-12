@@ -39,7 +39,7 @@ function dateFormat(dateOption: string): Object {
       return resDate;
     }
     case 'year': {
-      resDate.future = `${year + 1}`;
+      resDate.future = `${year}`;
       return resDate;
     }
     default: {
