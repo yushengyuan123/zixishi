@@ -16,10 +16,11 @@
     border:1px solid rgba(225,228,232,1);
     margin-top: 30px;
     border-radius:4px;
+    padding: 18px 0 18px 18px;
+
 
     textarea {
       height: 100%;
-      padding: 18px 18px 18px 18px;
     }
   }
 
@@ -81,17 +82,31 @@
                 console.log(fail);
                 wx.showToast({
                   title: '失败了...(ಥ_ಥ)',
-                  icon: "none",   
-                  duration: 2000, 
+                  icon: "none",
+                  duration: 2000,
                 })
               },
               (res) => {
                 console.log( "成功数据", res);
-                wx.showToast({
-                  title: '成功写好啦~',
-                  icon: "success",   
-                  duration: 2000, 
-                })
+                if (res.code == 1) {
+                  wx.showToast({
+                    title: '成功写好啦~',
+                    icon: "success",
+                    duration: 2000,
+                    success(res) {
+                      setTimeout(() => {
+                        wx.navigateBack()
+                      }, 1000)
+                    }
+                  })
+                } else if (res.code == -1){
+                  wx.showToast({
+                    title: res.message,
+                    icon: "none",
+                    duration: 2000,
+                  })
+                }
+
               })
           }
         };

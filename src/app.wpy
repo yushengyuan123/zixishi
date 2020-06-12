@@ -17,10 +17,11 @@
     config = {
       pages: [
         'pages/index',
-        'pages/statistic',
-        'pages/my',
-        'pages/paper/paper',
         'pages/create',
+        'pages/mangerTree/mangerTree',
+        'pages/my',
+        'pages/statistic',
+        'pages/paper/paper',
         'pages/roomspace',
         'pages/shudong',
         "pages/create/createzixishi",

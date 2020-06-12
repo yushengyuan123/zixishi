@@ -1,0 +1,157 @@
+<style lang="scss" scoped>
+  @import "../../utils/css/shareCss";
+
+  .shudong-con {
+    width: 100%;
+    height: 100vh;
+    background-image: url('https://s1.ax1x.com/2020/05/15/YrNmRA.png');
+    background-attachment: fixed;
+    background-size: cover;
+  }
+
+  .title {
+    @include title;
+    padding-top: 34px;
+  }
+
+  .bottom-con {
+    margin: 30px 0;
+  }
+
+  .shudong-card {
+    width: 80%;
+    margin: auto;
+    .delete-tree {
+      height: 64rpx;
+      line-height: 64rpx;
+      text-align: right;
+      font-size: 20rpx;
+      color: #FF8A8A;
+    }
+  }
+
+  .content-container {
+    @include alignCenter(100%);
+    min-height: 190rpx;
+    overflow: scroll;
+    background-color: white;
+    border:1px solid rgba(250,250,251,1);
+    box-shadow:0px 3px 8px rgba(32,32,39,0.12);
+    margin-top: 15px;
+    padding: 20px 0 15px 0;
+
+    image {
+      @include imgStyle(17px, 16px);
+      margin: 0 0 0 20px;
+    }
+
+    .shudong-content {
+      @include alignCenter(86%);
+      text-indent: 30px;
+      color: #202027;
+    }
+  }
+
+  .modify-con {
+    position: fixed;
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    right: 15px;
+    bottom: 30px;
+  }
+
+</style>
+<template>
+  <view class="shudong-con">
+    <view class="title">我的树洞</view>
+    <image class="modify-con" src="../../images/leave.png" @tap="goToWrite"></image>
+    <view class="bottom-con">
+      <view
+        class="shudong-card"
+        wx:for="{{card}}"
+        wx:key="{{id}}"
+        data-classify="{{item}}"
+        data-index='{{item.id}}'
+      >
+        <view class="content-container">
+          <view>
+            <image src="../../images/shudong_card.png" alt="1"/>
+          </view>
+          <view class="shudong-content">
+            {{item.content}}
+          </view>
+        </view>
+        <view class="delete-tree" @tap="deleteTree">删除</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import { RequestService } from '../../utils/shared/request.js';
+
+  export default class mangerTree extends wepy.page {
+    components = {};
+
+    mixins = [];
+
+    watch = {};
+
+    events = {};
+
+    data = {
+
+    };
+
+    computed = {};
+
+    onReady() {
+
+    }
+
+    methods = {
+
+    };
+
+    requestData(){
+      RequestService.soeRequest('GET', '', '/treeHole/getMyList',
+        (fail) => {
+          console.log(fail);
+        },
+        (res) => {
+          console.log("成功数据",res.data);
+          console.log(this)
+          this.setData({
+            card: res.data
+          })
+        })
+    }
+
+    onShow(){
+      this.requestData();
+    }
+
+    deleteTree(event) {
+
+      console.log('删除树洞')
+      const data = {
+        id: event.currentTarget.dataset.index
+      }
+      console.log(data)
+      // RequestService.soeRequest('POST', data, '/treeHole/delete',
+      //   (fail) => {
+      //     console.log(fail);
+      //   },
+      //   (res) => {
+      //     console.log("成功数据",res.data);
+      //     console.log(this)
+      //     this.setData({
+      //       card: res.data
+      //     })
+      //   })
+    }
+  }
+  ;
+</script>

@@ -27,6 +27,15 @@
     line-height: 50px;
     font-size: 0;
 
+    image {
+      display: block;
+      float: right;
+      height: 30rpx;
+      width: 30rpx;
+      margin-right: 28px;
+      margin-top: 20px;
+    }
+
     .item-title {
       @include inline;
       float: left;
@@ -68,9 +77,11 @@
     background: none;
     outline: none;
   }
+
   .login-btn::after {
     border: none;
   }
+
 
 </style>
 <template>
@@ -88,6 +99,10 @@
       <view class="my-info">
           <view class="item-title">签名</view>
           <view @tap="changeSign" class="item-content">{{signature}}</view>
+      </view>
+      <view class="my-info">
+        <view class="item-title">我的树洞</view>
+        <image @tap="mangerTree" src="../images/direction.png"></image>
       </view>
       <view class="my-info" wx:if="{{!hasLogin}}">
         <button class="login-btn" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">点击登录</button>
@@ -159,6 +174,12 @@
       bindGetUserInfo(e){
         console.log(e.detail.userInfo)
         this.hasLogin = RequestService.firstLogin(e.detail.userInfo.avatarUrl, e.detail.userInfo.nickName);
+      },
+
+      mangerTree() {
+        wx.navigateTo({
+          url: '/pages/mangerTree/mangerTree'
+        })
       }
     };
   }

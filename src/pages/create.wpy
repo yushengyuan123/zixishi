@@ -13,11 +13,11 @@
   .input-con {
     position: relative;
     @include alignCenter(84%);
-    height: rpx(90);
-    margin-top: rpx(30);
+    height: rpx(85);
+    margin-top: rpx(40);
 
     input {
-      height: rpx(90);
+      height: rpx(85);
       width: 100%;
       border: 1px solid rgba(225, 228, 232, 1);
       border-radius: 4px;
