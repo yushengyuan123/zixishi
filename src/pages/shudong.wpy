@@ -1,7 +1,7 @@
 <style lang="scss" scoped>
-@import "../utils/css/shareCss";
+  @import "../utils/css/shareCss";
 
-    .shudong-con {
+  .shudong-con {
     width: 100%;
     // height: 100vh;
     background-image: url('https://s1.ax1x.com/2020/05/15/YrNmRA.png');
@@ -15,17 +15,36 @@
   }
 
   .bottom-con {
+    position: relative;
+    min-height: 90vh;
+    width: 80%;
+    margin: auto;
     padding: 30px 0;
   }
 
+  .tree-content {
+    position: absolute;
+    white-space: nowrap;
+    width: 100%;
+    transition: all .35s ease-in-out;
+  }
+
+  .outer {
+    position: relative;
+    height: rpx(600);
+  }
+
   .shudong-card {
-    @include alignCenter(80%);
-    min-height: 190rpx;
+    position: relative;
+    display: inline-block;
+    width: 70%;
+    min-height: rpx(430);
     overflow-y: scroll;
     background-color: white;
-    border:1px solid rgba(250,250,251,1);
-    box-shadow:0px 3px 8px rgba(32,32,39,0.12);
-    margin-top: 15px;
+    border: 1px solid rgba(250, 250, 251, 1);
+    box-shadow: 0px 3px 8px rgba(32, 32, 39, 0.12);
+    margin-left: 15%;
+    margin-right: 15%;
     padding: 20px 0 15px 0;
 
     image {
@@ -33,9 +52,20 @@
       margin: 0 0 0 20px;
     }
 
+    .bg {
+      margin: 0!important;
+      $size: rpx(150);
+      position: absolute;
+      height: $size;
+      width: $size;
+      left: calc(50% - 75rpx);
+      top: calc(50% - 75rpx);
+      opacity: 0.4;
+    }
+
     .shudong-content {
+      white-space: normal;
       @include alignCenter(86%);
-      text-indent: 30px;
       color: #202027;
     }
   }
@@ -47,6 +77,30 @@
     border-radius: 50%;
     right: 15px;
     bottom: 30px;
+    z-index: 100;
+  }
+
+  .result-btn {
+    display: flex;
+    height: 20%;
+    align-items: center;
+    justify-content: center;
+    font-size: 50rpx;
+
+    .btn {
+      height: 25rpx;
+      width: 25rpx;
+      border-radius: 50%;
+      margin: 0 10rpx 0 10rpx;
+    }
+
+    .active {
+      background-color: #49958C;
+    }
+
+    .normal {
+      background:rgba(216,216,216,1);
+    }
   }
 
 </style>
@@ -55,72 +109,115 @@
     <view class="title">树洞</view>
     <image class="modify-con" src="../images/leave.png" @tap="goToWrite"/>
     <view class="bottom-con">
+      <view class="outer">
         <view
-          class="shudong-card"
-          wx:for="{{card}}"
-          wx:key="{{id}}"
-          data-classify="{{item}}"
-          data-index='{{item.id}}'
+          class="tree-content"
+          style="left: {{leftValue}}px"
         >
-          <view>
-            <image src="../images/shudong_card.png" alt="1"/>
-          </view>
-          <view class="shudong-content">
-            {{item.content}}
+          <view
+            class="shudong-card"
+            wx:for="{{card}}"
+            wx:key="{{id}}"
+            data-classify="{{item}}"
+            data-number='{{item.id}}'
+            capture-catch:touchstart="touchStart"
+            capture-catch:touchend="touchEnd"
+          >
+            <image src="../images/tree.png" class="bg"></image>
+            <view>
+              <image src="../images/shudong_card.png" alt="1"/>
+            </view>
+            <view class="shudong-content">
+              {{item.content}}
+            </view>
           </view>
         </view>
+      </view>
+      <view class="result-btn">
+        <view class="btn {{number === index ? 'active' : 'normal'}}" wx:for="{{card}}" wx:key="{{index}}"></view>
+      </view>
     </view>
   </view>
 </template>
 
 <script>
-    import wepy from 'wepy';
-    import { RequestService } from '../utils/shared/request.js';
+  import wepy from 'wepy';
+  import { RequestService } from '../utils/shared/request.js';
 
-    export default class shudong extends wepy.page {
-        components = {};
+  export default class shudong extends wepy.page {
+    config = {
+      navigationBarTitleText: ''
+    };
 
-        mixins = [];
+    components = {};
 
-        watch = {};
+    mixins = [];
 
-        events = {};
+    watch = {};
 
-        data = {
+    events = {};
 
-        };
+    data = {
+      startX: 0,
+      number: 0,
+      endX: 0,
+      leftValue: 0,
+    };
 
-        computed = {};
+    computed = {};
 
-        onReady() {
-
-        }
-
-        methods = {
-          goToWrite(){
-            wepy.navigateTo({
-              url: '/pages/paper/paper'
-            })
-          },
-        };
-
-        requestData(){
-          RequestService.soeRequest('GET', '', '/treeHole/getList',
-            (fail) => {
-              console.log(fail);
-            },
-            (res) => {
-              console.log("成功数据",res.data);
-              console.log(this)
-              this.setData({
-                card: res.data
-              })
+    requestData() {
+      RequestService.soeRequest('GET', '', '/treeHole/getList',
+        (fail) => {
+          console.log(fail);
+        },
+        (res) => {
+          const temp = []
+          for (let len = res.data.length, i = len - 1; i > len - 10; i--) {
+            temp.push(res.data[i])
+          }
+          this.setData({
+            'card': temp
           })
-        }
-
-        onShow(){
-          this.requestData();
-        }
+        })
     }
-    ;
+
+    onShow() {
+      this.requestData();
+    }
+
+    methods = {
+      goToWrite() {
+        wepy.navigateTo({
+          url: '/pages/paper/paper'
+        })
+      },
+
+      touchStart(e) {
+        //记录滑动开始的位置
+        this.startX = e.touches[0].clientX
+      },
+
+      touchEnd(e) {
+        const {windowWidth} = wx.getSystemInfoSync();
+        this.endX = e.changedTouches[0].clientX
+        //大于0说明向左滑动，小于0说明向右滑动
+        if (this.startX - this.endX > 20) {
+          if (this.number === 9) {
+            return;
+          }
+          this.number++
+          this.leftValue = -this.number * windowWidth * 0.8
+        } else if (this.startX - this.endX < -20) {
+          if (this.number === 0) {
+            return
+          }
+          this.number--
+          this.leftValue = -this.number * windowWidth * 0.8
+        }
+        this.startX = this.endX = 0
+      }
+    };
+  }
+  ;
 </script>

@@ -2,8 +2,8 @@
   @import "../utils/css/shareCss";
 
   .statistic-con {
-    height: 100vh;
     background: rgba(245, 245, 245, 1);
+    padding-bottom: rpx(100);
   }
 
   .top-con {
@@ -136,18 +136,17 @@
 <!--          <image src="../images/rank.png" class="rank-png"/>-->
         </view>
       </view>
-
-      <view class="chart-con">
-        <view class="time-con">
-          <timePicker></timePicker>
-        </view>
-        <!--        <view class="total-con">-->
-        <!--          <view class="total-time">2400分钟</view>-->
-        <!--          <view class="total-title">自习时长</view>-->
-        <!--        </view>-->
-        <view class="box">
-          <ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}"></ec-canvas>
-        </view>
+    </view>
+    <view class="chart-con">
+      <view class="time-con">
+        <timePicker></timePicker>
+      </view>
+      <!--        <view class="total-con">-->
+      <!--          <view class="total-time">2400分钟</view>-->
+      <!--          <view class="total-title">自习时长</view>-->
+      <!--        </view>-->
+      <view class="box">
+        <ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}"></ec-canvas>
       </view>
     </view>
   </view>

@@ -17,13 +17,13 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
-      'pages/mangerTree/mangerTree',
       'pages/statistic',
+      'pages/shudong',
+      'pages/mangerTree/mangerTree',
       'pages/my',
       'pages/paper/paper',
       'pages/create',
       'pages/roomspace',
-      'pages/shudong',
       'pages/create/createzixishi',
       'pages/room/roomspace',
       'pages/changeInfo/changeInfo'

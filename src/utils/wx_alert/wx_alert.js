@@ -1,18 +1,22 @@
-class Wx_alert {
-  success(message) {
-    wx.showToast({
-      title: message
-    })
-  }
-
-  fail(message) {
-    wx.showToast({
-      title: message,
-      icon: 'none'
-    })
-  }
+export function successNotice(message, cb) {
+  wx.showToast({
+    title: message,
+    success(){
+      if (cb) {
+        try {
+          cb()
+        } catch (e) {
+          console.log('弹窗回调函数错误')
+        }
+      }
+    }
+  })
 }
 
-const alert = new Wx_alert()
+export function failNotice(message) {
+  wx.showToast({
+    title: message,
+    icon: 'none',
+  })
+}
 
-export default alert
