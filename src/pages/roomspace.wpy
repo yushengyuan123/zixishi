@@ -146,7 +146,7 @@
 
     /*音乐选择*/
   .music-container {
-    @include fixed(auto, 207px);
+    @include fixed(auto, 250px);
     top: 30%;
     border-radius: 10px;
     background-color: white;
@@ -197,7 +197,7 @@
       >
       </view>
     </view>
-    <view class="time-con">12:57</view>
+    <view class="time-con">{{minute}}:{{second}}</view>
     <view class="media-con">
       <image style="margin-left: 0;" src="../images/group_background.png" alt="group_background" @tap.stop="bgChange"/>
       <image src="../images/music.png" alt="music" @tap.stop="musicChange"/>
@@ -230,7 +230,7 @@
         class="lock"
         wx:if="{{item.isLock}}"
       >
-      背景{{item.id}}<span style="color: #49958C">{{item.url === bgSrc? '(当前使用)': ''}}</span>
+      背景{{item.id}}<span style="color: #49958C">{{item.url === bgSrc? '(now)': ''}}</span>
     </view>
     <view @tap.stop="diyBg">
       自定义
@@ -247,7 +247,7 @@
       data-music='{{item.src}}'
       data-isLock="{{item.isLock}}"
       data-power="{{item.power}}"
-      data-title="{{item.title}}"
+      data-title="{{item.name}}"
       @tap.stop="chooseMusic"
     >
       <image
@@ -288,6 +288,8 @@
     data = {
       roomId: "",
       power: 0,
+      minute: "00",
+      second: "00",
       audioCtx: "http://music.163.com/song/media/outer/url?id=414706265.mp3",
       isHide: false,
       bgShow: false,
@@ -405,15 +407,35 @@
     onReady() {
       this.audioCtx = wx.getBackgroundAudioManager();
       this.audioCtx.title = "大鱼 钢琴版";
-      this.audioCtx.stop();
+      this.audioCtx.src = this.musicSrc;
+      this.audioCtx.seek(0);
+      this.isPlay = true;
       this.audioCtx.onEnded((e)=>{
-        console.log(e)
-        console.log(this)
         this.audioCtx.seek(0);
         this.audioCtx.play();
       })
       this.heartBeat();
-      setInterval(() => {
+      this.lastTime = setInterval(() => {
+        let minute = Number.parseInt(this.minute);
+        let second = Number.parseInt(this.second);
+        second++;
+        if (second >= 60) {
+          second = 0  //  大于等于60秒归零
+          minute ++;
+        }
+        if (minute < 10) {
+          // 少于10补零
+          minute = "0" + minute;
+        }
+        if (second < 10) {
+            // 少于10补零
+          second = "0" + second;
+        }
+        this.minute = minute;
+        this.second = second;
+        this.$apply();
+      }, 1000);
+      this.heartTime = setInterval(() => {
         this.heartBeat()
       }, 60000);
     }
@@ -466,6 +488,9 @@
               let power = res.data;
               let increase = power - that.power;
               wx.setStorageSync('power', power);
+              that.audioCtx.stop();
+              clearInterval(that.heartTime);
+              clearInterval(that.lastTime);
               wx.showToast({
                 title: `恭喜你，获得了${increase}能量值啦！继续加油鸭~`,
                 icon: "none",   
@@ -533,11 +558,14 @@
               that.setData({
                 'headSrc': wx.getStorageSync("head")
               })
+              
               for(let i = 1; i < that.headImgList.length; i++){
                 var temp_str= 'headImgList['+ i + '].url';
-                that.setData({
-                  [temp_str]: res.data[i]
-                });
+                if(wx.getStorageSync("head") != that.headImgList[i].url){
+                  that.setData({
+                    [temp_str]: res.data[i]
+                  });
+                }
               }
             }else {
               wx.showToast({

@@ -108,20 +108,25 @@
     <view class="top-con">
       <view class="average" style="margin-right: 2%">
         <view class="average-title">今日时长</view>
-        <view class="time-con">600分钟</view>
+        <view class="time-con">{{todayCount}}分钟</view>
         <view class="rank">
-          <image src="../images/up.png" class="up"/>
-          <view>8.64%</view>
+          <image
+            src="{{todayPercent > 0 ? '../images/up.png' : '../images/down.png'}}"
+            class="up"
+            style="{{todayPercent > 0 ? 'color: green' : 'color: red'}}"
+          >
+          </image>
+          <view>{{todayPercent}}%</view>
           <image src="../images/rank.png" class="rank-png"/>
         </view>
       </view>
 
       <view class="average" style="margin-left: 2%">
-        <view class="average-title">今日时长</view>
-        <view class="time-con">600分钟</view>
+        <view class="average-title">日均时长</view>
+        <view class="time-con">{{averageCount}}分钟</view>
         <view class="rank">
-          <image src="../images/up.png" class="up"/>
-          <view>8.64%</view>
+          <image src="{{averageCount > 0 ? '../images/up.png' : '../images/down.png'}}" class="up"></image>
+          <view>{{averagePercent}}%</view>
           <image src="../images/rank.png" class="rank-png"/>
         </view>
       </view>
@@ -130,10 +135,10 @@
         <view class="time-con">
           <timePicker></timePicker>
         </view>
-        <view class="total-con">
-          <view class="total-time">2400分钟</view>
-          <view class="total-title">自习时长</view>
-        </view>
+        <!--        <view class="total-con">-->
+        <!--          <view class="total-time">2400分钟</view>-->
+        <!--          <view class="total-title">自习时长</view>-->
+        <!--        </view>-->
         <view class="box">
           <ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}"></ec-canvas>
         </view>
@@ -146,26 +151,11 @@
   import wepy from 'wepy';
   import * as echarts from '../utils/ec-canvas/echarts';
   import timePicker from '../components/timePicker';
-  // import { statisticMol } from '../utils/apiManager/statisticApi';
+  import { statisticMol } from '../utils/apiManager/statisticApi';
   import { options } from '../utils/chartoptions/chartoptions';
+  import { date, changeDateFormat } from '../utils/shared/dateDeal';
 
   let chart = null;
-
-  const test = {
-    'message': 'success',
-    'code': '1',
-    'data': {
-      'times': {
-        '周日': 23,
-        '周一': 0,
-        '周二': 21,
-        '周三': 0,
-        '周四': 0,
-        '周五': 0,
-        '周六': 0
-      }
-    }
-  };
 
   export default class statistic extends wepy.page {
     config = {
@@ -181,12 +171,23 @@
 
     mixins = [];
 
-    watch = {};
+    computed = {
+      todayUp:function() {
+        if (this.todayPercent < 0) {
+          return 'color: red'
+        }
+        return 'color: green'
+      }
+    };
 
     events = {
       'returnDate': (data) => {
-        console.log(data)
-        this.formatReqData(data.time, data.mode)
+        statisticMol.getLong(data.time).then(res => {
+          if (res.code == 1) {
+            const option = options(res.data.times)
+            chart.setOption(option)
+          }
+        })
       }
     };
 
@@ -194,15 +195,17 @@
       ec: {
         onInit: this.initChart
       },
-      pickerDate: '123'
+      pickerDate: '123',
+      todayCount: '',
+      todayPercent: '',
+      averageCount: '',
+      averagePercent: ''
     };
 
     computed = {};
 
     onLoad() {
-      // statisticMol.getLong().then(res => {
-      //   console.log(res)
-      // })
+      this.initDate()
     }
 
     initChart(canvas, width, height, dpr) {
@@ -212,27 +215,28 @@
         devicePixelRatio: dpr // new
       });
       canvas.setChart(chart);
-      const option = options(test.data.times);
-      chart.setOption(option);
+      const reqData = {
+        'param': changeDateFormat(date({ type: 'day' }).now.split(' ')[0]),
+      }
+      statisticMol.getLong(reqData).then(res => {
+        if (res.code == 1) {
+          const option = options(res.data.times)
+          chart.setOption(option)
+        }
+      })
       return chart;
     }
 
-    formatReqData(date, mode) {
-      console.log(date)
-      switch (mode) {
-        case 'year': {
-          return
+    initDate() {
+      statisticMol.getTotal().then(res => {
+        if (res.code == 1) {
+          this.averageCount = res.data.averageCount
+          this.todayCount = res.data.todayCount
+          this.averagePercent = res.data.averageCountPercent
+          this.todayPercent = res.data.todayCountPercent
+          this.$apply()
         }
-        case 'month': {
-          return
-        }
-        case 'week': {
-          return date.replace('~', ' - ')
-        }
-        case 'day': {
-          return date
-        }
-      }
+      })
     }
   };
 </script>

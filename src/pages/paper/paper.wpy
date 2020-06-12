@@ -88,10 +88,15 @@
               (res) => {
                 console.log( "成功数据", res);
                 wx.showToast({
-                  title: '成功写好啦~',
+                  title: '成功改好啦~',
                   icon: "success",   
                   duration: 2000, 
                 })
+                setTimeout(() => {
+                  wx.navigateBack({
+                    delta: 2,
+                  });
+                }, 1000);
               })
           }
         };

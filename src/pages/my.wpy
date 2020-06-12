@@ -117,7 +117,7 @@ export default class my extends wepy.page {
 
   data = {
     noLogin: true,
-    signature: ''
+    signature: '用户很懒，什么都没留下'
   };
 
   computed = {};
@@ -127,6 +127,7 @@ export default class my extends wepy.page {
     if (wx.getStorageSync('Authorization')) {
       this.signature = wx.getStorageSync('signature');
       this.noLogin = Boolean(wx.getStorageSync('noLogin'));
+      this.$apply();
     }
   }
 
@@ -142,8 +143,9 @@ export default class my extends wepy.page {
       this.myList[3].date = e.detail.value;
     },
     changeSign() {
+      let that = this;
       wx.navigateTo({
-        url: `/pages/changeInfo/changeInfo?signature=${this.signature}`
+        url: `/pages/changeInfo/changeInfo?signature=${that.signature}`
       });
     },
     bindGetUserInfo(e) {
@@ -156,8 +158,10 @@ export default class my extends wepy.page {
       this.signature = wx.getStorageSync('signature');
       setTimeout(() => {
         this.noLogin = false;
-        this.signature = wx.getStorageSync('signature');
-      }, 1000);
+        this.signature = wx.getStorageSync('signature')?wx.getStorageSync('signature'):"用户很懒，什么也没留下";
+        this.$apply();
+      }, 2000);
+      
     }
   };
 }

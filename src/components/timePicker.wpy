@@ -85,7 +85,7 @@
         };
 
         data = {
-          time: date({type: 'day'}).now.split(' ')[0],
+          time: changeDateFormat(date({type: 'day'}).now.split(' ')[0]),
           choose: 'day'
         };
 
@@ -94,7 +94,7 @@
         };
 
         onLoad() {
-          console.log('pickerDate:',this.pickerDate)
+
         }
 
         methods = {
@@ -105,21 +105,23 @@
             })
             let now =  changeDateFormat(res.now)
             let future =  changeDateFormat(res.future)
-            if (type  === 'day') {
-              this.time = now
-            } else {
+            if (type === 'week') {
               this.time = `${now}~${future}`
+            } else {
+              this.time = future
             }
+            const _this = this
             this.$emit('returnDate', {
-              time: this.time,
+              time: type === 'week' ? _this.time.replace('~', ' - ') : this.time,
               mode: type
             })
           },
 
           rangeChange(direction) {
             this.time = arrowOnclick(this.choose, this.time, direction)
+            const _this = this
             this.$emit('returnDate', {
-              time: this.time
+              time: this.choose === 'week' ? _this.time.replace('~', ' - ') : this.time
             })
           }
 

@@ -32,7 +32,7 @@ export const options = function(refreshData) {
     xAxis: [
       {
         type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        data: [],
         axisTick: {
           alignWithLabel: true
         }
@@ -52,6 +52,7 @@ export const options = function(refreshData) {
       }
     ]
   };
+  options.xAxis[0].data = Object.keys(refreshData)
   options.series[0].data = Object.values(refreshData)
   return options
 };

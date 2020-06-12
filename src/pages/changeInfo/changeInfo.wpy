@@ -97,6 +97,11 @@
                   icon: "success",   
                   duration: 2000, 
                 })
+                setTimeout(() => {
+                  wx.navigateBack({
+                    delta: 2,
+                  });
+                }, 1000);
               })
             } else if (res.cancel) {
             console.log('用户点击取消')

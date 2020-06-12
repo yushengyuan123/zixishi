@@ -124,8 +124,8 @@
   /*附近房间列表*/
   .room-list-con {
     max-height: 60vh;
-    min-height: 50px;
-    min-width: 50vw;
+    min-height: 200px;
+    min-width: 60vw;
     overflow: auto;
     .room-con {
       position: relative;
@@ -165,7 +165,7 @@
 
   .no-room {
     text-align: center;
-    margin: 12px auto;
+    margin: 87px auto;
     font-size: 26px;
     font-weight: 800;
     color: #5757578f;

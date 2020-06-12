@@ -89,10 +89,10 @@
 /*弹窗*/
 @mixin modalDlg{
   position: fixed;
-  top: 50%;
+  top: 45%;
   left: 50%;
   z-index: 9999;
-  transform: translate(-50%, -46%);
+  transform: translate(-50%, -50%);
   background-color: #fff;
   border-radius: 20rpx;
   text-align: left;
