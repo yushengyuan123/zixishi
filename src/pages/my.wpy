@@ -1,76 +1,87 @@
 <style lang="scss" scoped>
-@import '../utils/css/shareCss';
+  @import "../utils/css/shareCss";
 
-.my-con {
-  width: 100%;
-  height: 100vh;
-  background-image: url('https://s1.ax1x.com/2020/05/15/YrNmRA.png');
-  background-attachment: fixed;
-  background-size: cover;
-}
-
-.title {
-  @include title;
-  padding-top: 34px;
-}
-
-.bottom-con {
-  width: 100%;
-  margin-top: 20px;
-}
-
-.my-info {
-  height: 50px;
-  width: 100%;
-  border-bottom: 1px solid rgba(237, 240, 244, 1);
-  padding: 5px 0;
-  line-height: 50px;
-  font-size: 0;
-
-  .item-title {
-    @include inline;
-    float: left;
-    width: 20%;
-    height: 100%;
-    text-align: center;
-    font: {
-      size: 16px;
-    }
+  .my-con {
+    width: 100%;
+    height: 100vh;
+    background-image: url('https://s1.ax1x.com/2020/05/15/YrNmRA.png');
+    background-attachment: fixed;
+    background-size: cover;
   }
 
-  .item-content {
-    @include inline;
-    padding-right: 28px;
-    color: rgba(77, 77, 77, 0.918);
-    font: {
-      size: 16px;
-    }
-    text-align: right;
-    height: 100%;
-    width: calc(80% - 28px);
+  .title {
+    @include title;
+    padding-top: 34px;
   }
 
-  .user-icon {
-    display: block;
-    float: right;
+  .bottom-con {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .my-info {
     height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    background-color: #64c8bc;
-    overflow: hidden;
-  }
-}
+    width: 100%;
+    border-bottom: 1px solid rgba(237, 240, 244, 1);
+    padding: 5px 0;
+    line-height: 50px;
+    font-size: 0;
 
-.login-btn {
-  width: 200px;
-  height: 40px;
-  font-size: 16px;
-  background: none;
-  outline: none;
-}
-.login-btn::after {
-  border: none;
-}
+    image {
+      display: block;
+      float: right;
+      height: 30 rpx;
+      width: 30 rpx;
+      margin-right: 28px;
+      margin-top: 20px;
+    }
+
+    .item-title {
+      @include inline;
+      float: left;
+      width: 20%;
+      height: 100%;
+      text-align: center;
+      font: {
+        size: 16px;
+      }
+
+      .item-content {
+        @include inline;
+        padding-right: 28px;
+        color: rgba(77, 77, 77, 0.918);
+        font: {
+          size: 16px;
+        };
+        text-align: right;
+        height: 100%;
+        width: calc(80% - 28px);
+      }
+
+      .user-icon {
+        display: block;
+        float: right;
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        background-color: #64C8BC;
+        overflow: hidden;
+      }
+    }
+
+    .login-btn {
+      width: 200px;
+      height: 40px;
+      font-size: 16px;
+      background: none;
+      outline: none;
+    }
+
+    .login-btn::after {
+      border: none;
+    }
+
+
 </style>
 <template>
   <view class="my-con">
@@ -92,6 +103,12 @@
         <view class="item-title">签名</view>
         <view class="item-content">{{signature}}</view>
       </view>
+
+      <view class="my-info" @tap="mangerTree">
+        <view class="item-title">我的树洞</view>
+        <image src="../images/direction.png"></image>
+      </view>
+
       <view class="my-info" wx:if="{{noLogin}}">
         <button class="login-btn" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">点击登录</button>
       </view>
@@ -100,69 +117,76 @@
 </template>
 
 <script>
-import wepy from 'wepy';
-import { RequestService } from '../utils/shared/request.js';
+  import wepy from 'wepy';
+  import { RequestService } from '../utils/shared/request.js';
 
-export default class my extends wepy.page {
-  config = {
-    navigationBarTitleText: '我的'
-  };
-  components = {};
+  export default class my extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的'
+    };
+    components = {};
 
-  mixins = [];
+    mixins = [];
 
-  watch = {};
+    watch = {};
 
-  events = {};
+    events = {};
 
-  data = {
-    noLogin: true,
-    signature: '用户很懒，什么都没留下'
-  };
+    data = {
+      noLogin: true,
+      signature: '用户很懒，什么都没留下'
+    };
 
-  computed = {};
+    computed = {};
 
-  onShow() {
-    let that = this;
-    if (wx.getStorageSync('Authorization')) {
-      this.signature = wx.getStorageSync('signature');
-      this.noLogin = Boolean(wx.getStorageSync('noLogin'));
-      this.$apply();
-    }
-  }
-
-  onLoad() {}
-
-  methods = {
-    bindSexChange(e) {
-      console.log(e.detail.value);
-      this.myList[2].sex = this.sexArr[e.detail.value];
-    },
-    bindDateChange(e) {
-      console.log('picker发送选择改变，携带值为', e.detail.value);
-      this.myList[3].date = e.detail.value;
-    },
-    changeSign() {
+    onShow() {
       let that = this;
-      wx.navigateTo({
-        url: `/pages/changeInfo/changeInfo?signature=${that.signature}`
-      });
-    },
-    bindGetUserInfo(e) {
-      console.log(e.detail.userInfo);
-      RequestService.firstLogin(
-        e.detail.userInfo.avatarUrl,
-        e.detail.userInfo.nickName
-      )
-      this.noLogin = false;
-      this.signature = wx.getStorageSync('signature');
-      setTimeout(() => {
-        this.noLogin = false;
-        this.signature = wx.getStorageSync('signature')?wx.getStorageSync('signature'):"用户很懒，什么也没留下";
+      if (wx.getStorageSync('Authorization')) {
+        this.signature = wx.getStorageSync('signature');
+        this.noLogin = Boolean(wx.getStorageSync('noLogin'));
         this.$apply();
-      }, 2000);
-      
+      }
     }
-  };
-}
+
+    onLoad() {
+    }
+
+    methods = {
+      bindSexChange(e) {
+        console.log(e.detail.value);
+        this.myList[2].sex = this.sexArr[e.detail.value];
+      },
+      bindDateChange(e) {
+        console.log('picker发送选择改变，携带值为', e.detail.value);
+        this.myList[3].date = e.detail.value;
+      },
+      changeSign() {
+        let that = this;
+        wx.navigateTo({
+          url: `/pages/changeInfo/changeInfo?signature=${that.signature}`
+        });
+      },
+      bindGetUserInfo(e) {
+        console.log(e.detail.userInfo);
+        RequestService.firstLogin(
+          e.detail.userInfo.avatarUrl,
+          e.detail.userInfo.nickName
+        )
+        this.noLogin = false;
+        this.signature = wx.getStorageSync('signature');
+        setTimeout(() => {
+          this.noLogin = false;
+          this.signature = wx.getStorageSync('signature') ? wx.getStorageSync('signature') : "用户很懒，什么也没留下";
+          this.$apply();
+        }, 2000);
+
+      },
+
+      mangerTree() {
+        wx.navigateTo({
+          url: '/pages/mangerTree/mangerTree'
+        })
+      }
+    };
+  }
 </script>
