@@ -15,13 +15,16 @@ export class RequestService {
    * errTip 自定义错误信息
    */
   static httpHandlerError(info, callBack, errTip) {
+    let that = this;
     wepy.hideLoading()
     /**请求成功，退出该函数 */
     if ((info.statusCode >= 200 && info.statusCode <= 207) || info.statusCode === 304) {
       return false
     } else {
       /**401 没有权限时，重新登录 */
-      if (info.statusCode === 401) {
+      if (info.code === 401) {
+        wx.setStorageSync("noLogin", true);
+        that.noLogin = true;
         wx.switchTab({
           url: 'pages/my'
         })
@@ -95,10 +98,24 @@ export class RequestService {
       complete: (res) => {
         let error = this.httpHandlerError(res, failFn)
         if (error) return;
-        if (reqUrl == "/user/login") {
-          sucFn(res);
-        } else {
-          sucFn(res.data);
+        if (res.data.code === 0 || res.data.code === "0") {
+          wx.setStorageSync("noLogin", true);
+          that.noLogin = true;
+          wx.switchTab({
+            url: 'pages/my'
+          })
+        }else if(res.data.code === 1 || res.data.code === "1"){
+          if (reqUrl == "/user/login") {
+            sucFn(res);
+          } else {
+            sucFn(res.data);
+          }
+        }else {
+          wepy.showToast({
+            title: res.data.message,
+            icon: 'loading',
+            duration: 2000
+          })
         }
       }
     })
