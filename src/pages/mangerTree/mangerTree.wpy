@@ -66,7 +66,6 @@
 <template>
   <view class="shudong-con">
     <view class="title">我的树洞</view>
-    <image class="modify-con" src="../../images/leave.png" @tap="goToWrite"></image>
     <view class="bottom-con">
       <view
         class="shudong-card"
@@ -138,8 +137,6 @@
     }
 
     deleteTree(event) {
-
-      console.log('删除树洞')
       console.log(event)
       const data = {
         id: event.currentTarget.dataset.index
