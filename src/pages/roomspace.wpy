@@ -146,7 +146,7 @@
 
     /*音乐选择*/
   .music-container {
-    @include fixed(auto, 207px);
+    @include fixed(auto, 250px);
     top: 30%;
     border-radius: 10px;
     background-color: white;
@@ -179,9 +179,9 @@
   <view class="room-container" style="background-image: url({{bgSrc}})" @tap="changeHead">
     <view>
     <view class="room-title">
-      <view class="join-code">加入码:7777777</view>
+      <view class="join-code">加入码:{{roomId}}</view>
       <view class="energy-con">
-        123
+        {{power}}
         <image src="../images/thunder.png" alt="thunder"/>
       </view>
     </view>
@@ -197,7 +197,7 @@
       >
       </view>
     </view>
-    <view class="time-con">12:57</view>
+    <view class="time-con">{{minute}}:{{second}}</view>
     <view class="media-con">
       <image style="margin-left: 0;" src="../images/group_background.png" alt="group_background" @tap.stop="bgChange"/>
       <image src="../images/music.png" alt="music" @tap.stop="musicChange"/>
@@ -216,6 +216,7 @@
       data-classify="{{item}}"
       data-url='{{item.url}}'
       data-isLock="{{item.isLock}}"
+      data-power="{{item.power}}"
       @tap.stop="chooseBg"
     >
       <image
@@ -229,7 +230,7 @@
         class="lock"
         wx:if="{{item.isLock}}"
       >
-      背景{{item.id}}<span style="color: #49958C">{{item.url === bgSrc? '(当前使用)': ''}}</span>
+      背景{{item.id}}<span style="color: #49958C">{{item.url === bgSrc? '(now)': ''}}</span>
     </view>
     <view @tap.stop="diyBg">
       自定义
@@ -245,6 +246,8 @@
       data-classify="{{item}}"
       data-music='{{item.src}}'
       data-isLock="{{item.isLock}}"
+      data-power="{{item.power}}"
+      data-title="{{item.name}}"
       @tap.stop="chooseMusic"
     >
       <image
@@ -269,6 +272,7 @@
   import wepy from 'wepy';
   import background from '../components/background'
   import music from '../components/music'
+  import { RequestService } from '../utils/shared/request.js';
 
   export default class roomspace extends wepy.page {
     components = {
@@ -282,72 +286,92 @@
     events = {};
 
     data = {
-      audioCtx: "",
+      roomId: "",
+      power: 0,
+      minute: "00",
+      second: "00",
+      audioCtx: "http://music.163.com/song/media/outer/url?id=414706265.mp3",
+      isHide: false,
       bgShow: false,
       musicShow: false,
       maskShow: false,
       hasHead: true,
       isPlay: false,
-      headSrc: "../images/head_icon.png",
       bgSrc: 'https://s1.ax1x.com/2020/05/15/YrNmRA.png',
-      musicSrc: 'https://ws.stream.qqmusic.qq.com/C400003P7AKr4Q6NnS.m4a?guid=4242576791&vkey=F02F858828F5CE97E71CF80C53301FDFFB156AD671052E2FD8402DFEE36BD2D725DA81F7E09151AAA734B92D718E4E489781EC8FFDDDC5FE&uin=1663&fromtag=66',
+      musicSrc: 'http://music.163.com/song/media/outer/url?id=414706265.mp3',
       choose: 1,
       bg_list: [
           {
               url: 'https://s1.ax1x.com/2020/05/15/YrNmRA.png',
               id: 0,
-              isLock: false
+              isLock: false,
+              power: 0
           },
           {
-              url: '../images/bg2.png',
+              url: 'https://s1.ax1x.com/2020/06/10/tTP69x.jpg',
               id: 1,
-              isLock: false
+              isLock: false,
+              power: 20
+          },
+          {
+              url: 'https://s1.ax1x.com/2020/06/10/tTPs41.jpg',
+              id: 2,
+              isLock: true,
+              power: 50
           },
           {
               url: 'https://s1.ax1x.com/2020/05/30/tMg0gI.jpg',
-              id: 4,
-              isLock: false
+              id: 3,
+              isLock: true,
+              power: 100
           },
           {
               url: 'https://s1.ax1x.com/2020/05/30/tMgw8A.jpg',
+              id: 4,
+              isLock: true,
+              power: 200
+          },
+          {
+              url: 'https://s1.ax1x.com/2020/06/10/tTPc36.jpg',
               id: 5,
-              isLock: false
+              isLock: true,
+              power: 500
           },
           {
-              url: '../images/bg3.png',
-              id: 2,
-              isLock: true
-          },
-          {
-              url: '../images/bg1.png',
-              id: 3,
-              isLock: true
+              url: 'https://s1.ax1x.com/2020/06/10/tTPggK.jpg',
+              id: 6,
+              isLock: true,
+              power: 800
           },
       ],
       musicList:[
           {
               name: "大鱼 钢琴版",
-              src: "https://ws.stream.qqmusic.qq.com/C400003P7AKr4Q6NnS.m4a?guid=4242576791&vkey=F02F858828F5CE97E71CF80C53301FDFFB156AD671052E2FD8402DFEE36BD2D725DA81F7E09151AAA734B92D718E4E489781EC8FFDDDC5FE&uin=1663&fromtag=66",
+              src: "http://music.163.com/song/media/outer/url?id=414706265.mp3",
               id: 0,
-              isLock: false
+              isLock: false,
+              power: 0
           },
           {
               name: "Lemon",
-              src: "https://ws.stream.qqmusic.qq.com/C400003pZAGe4Q2w81.m4a?guid=4242576791&vkey=CBEF0ED29EF5ADAA344B31C3568A089246C2822F61A070E7B0FDCB5B8623B6A0699B77EC50AA76A22FD5E1438D46540C75EBE00FC3F6E7FF&uin=1663&fromtag=66",
+              src: "http://music.163.com/song/media/outer/url?id=536622304.mp3",
               id: 1,
-              isLock: false
+              isLock: false,
+              power: 20
           },
           {
               name: "One Summer's Day",
-              src: "https://ws.stream.qqmusic.qq.com/C400002wA2Z83XHXMi.m4a?guid=4242576791&vkey=34ECE671E14DC911E1417D3185D5941580CA6FDC2C3B32F83660E59688CE426BA5D6CC9B9CFE2134025323051AF983089909382E0E4FAFD6&uin=1663&fromtag=66",
+              src: "http://music.163.com/song/media/outer/url?id=1403706788.mp3",
               id: 2,
-              isLock: true
+              isLock: true,
+              power: 50
           },
           {
               name: "Night Changes",
-              src: "https://ws.stream.qqmusic.qq.com/C400003TNqN63vinlY.m4a?guid=4242576791&vkey=2A5794053A2A6B9F874C626CD71248DFE86446207DE47F28FCEBD52C672FA2CBFB8B766DB5AE6C42D431B911725E07FA2086BDB42FD9DAAC&uin=1663&fromtag=66",
+              src: "http://music.163.com/song/media/outer/url?id=29719175.mp3",
               id: 3,
-              isLock: true
+              isLock: true,
+              power: 100
           }
       ],
       headImgList: [
@@ -381,9 +405,177 @@
     computed = {};
 
     onReady() {
-      this.audioCtx = wx.createInnerAudioContext('myAudio');
+      this.audioCtx = wx.getBackgroundAudioManager();
+      this.audioCtx.title = "大鱼 钢琴版";
       this.audioCtx.src = this.musicSrc;
+      this.audioCtx.seek(0);
+      this.isPlay = true;
+      this.audioCtx.onEnded((e)=>{
+        this.audioCtx.seek(0);
+        this.audioCtx.play();
+      })
+      this.heartBeat();
+      this.lastTime = setInterval(() => {
+        let minute = Number.parseInt(this.minute);
+        let second = Number.parseInt(this.second);
+        second++;
+        if (second >= 60) {
+          second = 0  //  大于等于60秒归零
+          minute ++;
+        }
+        if (minute < 10) {
+          // 少于10补零
+          minute = "0" + minute;
+        }
+        if (second < 10) {
+            // 少于10补零
+          second = "0" + second;
+        }
+        this.minute = minute;
+        this.second = second;
+        this.$apply();
+      }, 1000);
+      this.heartTime = setInterval(() => {
+        this.heartBeat()
+      }, 60000);
     }
+
+    onLoad(options){
+      let that = this;
+      this.roomId = options.id;
+      RequestService.soeRequest('GET', '', '/user/info',
+        (fail) => {
+          console.log(fail);
+        },
+        (res) => {
+          if(res.code == 1 || res.code == "1"){
+            console.log("成功数据",res);
+            that.power = res.data.power;
+            for(let i = 0; i < that.bg_list.length; i++){
+              if(res.data.power>=that.bg_list[i].power){
+                that.bg_list[i].isLock = false;
+              }else{
+                that.bg_list[i].isLock = true;
+              }
+            }
+            for(let i = 0; i < that.musicList.length; i++){
+              if(res.data.power>=that.bg_list[i].power){
+                that.musicList[i].isLock = false;
+              }else{
+                that.musicList[i].isLock = true;
+              }
+            }
+            that.$apply();
+          }else {
+            wx.showToast({
+              title: res.message,
+              icon: "none",   
+              duration: 2000, 
+            })
+          }
+      })
+    }
+
+    onUnload(){
+      let that = this;
+        RequestService.soeRequest('POST', {id: this.roomId}, '/room/quit',
+          (fail) => {
+            console.log(fail);
+          },
+          (res) => {
+            if(res.code == 1 || res.code == "1"){
+              console.log("成功数据",res);
+              let power = res.data;
+              let increase = power - that.power;
+              wx.setStorageSync('power', power);
+              that.audioCtx.stop();
+              clearInterval(that.heartTime);
+              clearInterval(that.lastTime);
+              wx.showToast({
+                title: `恭喜你，获得了${increase}能量值啦！继续加油鸭~`,
+                icon: "none",   
+                duration: 2000, 
+              })
+            }else {
+              wx.showToast({
+                title: res.message,
+                icon: "none",   
+                duration: 2000, 
+              })
+            }
+        })
+    }
+
+    onShow(){
+      RequestService.soeRequest('GET', '', '/room/unlock',
+          (fail) => {
+            console.log(fail);
+          },
+          (res) => {
+            if(res.code == 1 || res.code == "1"){
+              console.log("成功数据",res);
+              this.isHide = false;
+              this.$apply();
+            }else {
+              wx.showToast({
+                title: res.message,
+                icon: "none",   
+                duration: 2000, 
+              })
+            }
+        })
+    }
+
+    onHide(){
+        RequestService.soeRequest('GET', '', '/room/lock',
+          (fail) => {
+            console.log(fail);
+          },
+          (res) => {
+            if(res.code == 1 || res.code == "1"){
+              console.log("成功数据",res);
+              this.isHide = true;
+              this.$apply();
+            }else {
+              wx.showToast({
+                title: res.message,
+                icon: "none",   
+                duration: 2000, 
+              })
+            }
+        })
+    }
+
+    heartBeat(){
+      let that = this;
+        RequestService.soeRequest('POST', "", '/user/heartbeat',
+          (fail) => {
+            console.log(fail);
+          },
+          (res) => {
+            if(res.code == 1 || res.code == "1"){
+              console.log("成功数据",res);
+              that.setData({
+                'headSrc': wx.getStorageSync("head")
+              })
+              
+              for(let i = 1; i < that.headImgList.length; i++){
+                var temp_str= 'headImgList['+ i + '].url';
+                if(wx.getStorageSync("head") != that.headImgList[i].url){
+                  that.setData({
+                    [temp_str]: res.data[i]
+                  });
+                }
+              }
+            }else {
+              wx.showToast({
+                title: res.message,
+                icon: "none",   
+                duration: 2000, 
+              })
+            }
+        })
+      }
 
     methods = {
       bgChange(){
@@ -398,7 +590,6 @@
         this.bgShow = false;
         this.musicShow = false;
         this.maskShow = false;
-        // this.hasHead = true;
       },
       audioPlay() {
         this.audioCtx.play();
@@ -416,7 +607,7 @@
       chooseBg(e){
         if(e.currentTarget.dataset.classify.isLock){
           wx.showToast({
-            title: '需要解锁后才能使用哟',
+            title: `需要${e.currentTarget.dataset.classify.power}能量值才能解锁使用哟`,
             icon: "none",   
             duration: 2000, 
           })
@@ -431,7 +622,7 @@
       chooseMusic(e){
         if(e.currentTarget.dataset.classify.isLock){
           wx.showToast({
-            title: '需要解锁后才能使用哟',
+            title: `需要${e.currentTarget.dataset.classify.power}能量值才能解锁使用哟`,
             icon: "none",   
             duration: 2000, 
           })
@@ -439,7 +630,7 @@
         }
         this.musicSrc = e.currentTarget.dataset.music;
         this.audioCtx.src = this.musicSrc;
-
+        this.audioCtx.title = e.currentTarget.dataset.title;
         this.bgShow = false;
         this.musicShow = false;
         this.maskShow = false;
@@ -451,9 +642,15 @@
         this.hasHead = !this.hasHead;
       },
       diyBg(){
+        let that = this;
         wx.chooseImage({
           success (res) {
-            const tempFilePaths = res.tempFilePaths
+            console.log(res)
+            const tempFilePaths = res.tempFilePaths;
+            that.bgSrc = res.tempFilePaths[0];
+            that.bgShow = false;
+            that.maskShow = false;
+            that.$apply();
             if(res.tempFiles[0].size > 5*(Math.pow(2,20))){
               wx.showToast({
                 title: '注意图片大小不能超过5M哦',
@@ -462,25 +659,14 @@
               })
                 return false;
             }
-            // wx.uploadFile({
-            //   url: 'https://example.weixin.qq.com/upload', //仅为示例，非真实的接口地址
-            //   filePath: tempFilePaths[0],
-            //   name: 'file',
-            //   formData: {
-            //     'user': 'test'
-            //   },
-            //   success (res){
-            //     const data = res.data
-            //     //do something
-            //   }
-            // })
           }
         })
       },
       diyMusic(){
+        let that = this;
         wx.chooseMessageFile({
           count: 1,
-          type: 'all',
+          type: 'file',
           success (res) {
             console.log(res)
             let name = res.tempFiles[0].name;
@@ -505,7 +691,13 @@
               })
                 return false;
             }
-            const tempFilePaths = res.tempFiles[0]
+            that.audioCtx.src = res.tempFiles[0].path;
+            that.audioCtx.title = res.tempFiles[0].name;
+            that.audioCtx.play();
+            that.isPlay = true;
+            that.musicShow = false;
+            that.maskShow = false;
+            that.$apply();
           }
         })
       }

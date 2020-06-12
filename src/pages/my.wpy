@@ -36,15 +36,14 @@
       margin-top: 20px;
     }
 
-    .item-title {
-      @include inline;
-      float: left;
-      width: 20%;
-      height: 100%;
-      text-align: center;
-      font: {
-        size: 16px;
-      };
+  .item-title {
+    @include inline;
+    float: left;
+    width: 20%;
+    height: 100%;
+    text-align: center;
+    font: {
+      size: 16px;
     }
 
     .item-content {
@@ -90,21 +89,24 @@
     <view class="bottom-con">
       <view class="my-info">
         <view class="item-title">头像</view>
-        <view class="item-content"><open-data type="userAvatarUrl" class="user-icon"></open-data></view>
+        <view class="item-content">
+          <open-data type="userAvatarUrl" class="user-icon"></open-data>
+        </view>
       </view>
       <view class="my-info">
         <view class="item-title">昵称</view>
-        <view class="item-content"><open-data type="userNickName"></open-data></view>
+        <view class="item-content">
+          <open-data type="userNickName"></open-data>
+        </view>
       </view>
-      <view class="my-info">
-          <view class="item-title">签名</view>
-          <view @tap="changeSign" class="item-content">{{signature}}</view>
-      </view>
+      <view class="my-info" @tap="changeSign" wx:if="{{!noLogin}}">
+        <view class="item-title">签名</view>
+        <view class="item-content">{{signature}}</view>
       <view class="my-info">
         <view class="item-title">我的树洞</view>
         <image @tap="mangerTree" src="../images/direction.png"></image>
       </view>
-      <view class="my-info" wx:if="{{!hasLogin}}">
+      <view class="my-info" wx:if="{{noLogin}}">
         <button class="login-btn" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">点击登录</button>
       </view>
     </view>
@@ -127,61 +129,60 @@
 
     events = {};
 
-    data = {
-      hasLogin: false,
-      signature: "...."
-    };
+  data = {
+    noLogin: true,
+    signature: '用户很懒，什么都没留下'
+  };
 
     computed = {};
 
-    onShow() {
-      this.hasLogin = RequestService.hasLogin;
+  onShow() {
+    let that = this;
+    if (wx.getStorageSync('Authorization')) {
+      this.signature = wx.getStorageSync('signature');
+      this.noLogin = Boolean(wx.getStorageSync('noLogin'));
+      this.$apply();
     }
-
-    onLoad(){
-    }
-
-    methods = {
-      bindSexChange(e){
-        console.log(e.detail.value)
-        this.myList[2].sex = this.sexArr[e.detail.value];
-      },
-      bindDateChange(e) {
-        console.log('picker发送选择改变，携带值为', e.detail.value)
-        this.myList[3].date= e.detail.value
-      },
-      changeSign(){
-        if(RequestService.hasLogin){
-          wepy.navigateTo({
-            url: "/pages/changeInfo/changeInfo?mode=签名"
-          })
-        }else {
-          wx.showModal({
-            title: '提示',
-            content: '你还没有登录噢！',
-            success: function (res) {
-              if (res.confirm) {
-                wx.switchTab({
-                  url: '../pages/my'
-                })
-              } else if (res.cancel) {
-                console.log('用户点击取消')
-              }
-            }
-          })
-        }
-      },
-      bindGetUserInfo(e){
-        console.log(e.detail.userInfo)
-        this.hasLogin = RequestService.firstLogin(e.detail.userInfo.avatarUrl, e.detail.userInfo.nickName);
-      },
-
-      mangerTree() {
-        wx.navigateTo({
-          url: '/pages/mangerTree/mangerTree'
-        })
-      }
-    };
   }
-  ;
+
+  onLoad() {}
+
+  methods = {
+    bindSexChange(e) {
+      console.log(e.detail.value);
+      this.myList[2].sex = this.sexArr[e.detail.value];
+    },
+    bindDateChange(e) {
+      console.log('picker发送选择改变，携带值为', e.detail.value);
+      this.myList[3].date = e.detail.value;
+    },
+    changeSign() {
+      let that = this;
+      wx.navigateTo({
+        url: `/pages/changeInfo/changeInfo?signature=${that.signature}`
+      });
+    },
+    bindGetUserInfo(e) {
+      console.log(e.detail.userInfo);
+      RequestService.firstLogin(
+        e.detail.userInfo.avatarUrl,
+        e.detail.userInfo.nickName
+      )
+      this.noLogin = false;
+      this.signature = wx.getStorageSync('signature');
+      setTimeout(() => {
+        this.noLogin = false;
+        this.signature = wx.getStorageSync('signature')?wx.getStorageSync('signature'):"用户很懒，什么也没留下";
+        this.$apply();
+      }, 2000);
+
+    },
+
+    mangerTree() {
+      wx.navigateTo({
+        url: '/pages/mangerTree/mangerTree'
+      })
+    }
+  };
+}
 </script>

@@ -124,6 +124,8 @@
   /*附近房间列表*/
   .room-list-con {
     max-height: 60vh;
+    min-height: 200px;
+    min-width: 60vw;
     overflow: auto;
     .room-con {
       position: relative;
@@ -161,6 +163,14 @@
       }
   }
 
+  .no-room {
+    text-align: center;
+    margin: 87px auto;
+    font-size: 26px;
+    font-weight: 800;
+    color: #5757578f;
+  }
+
 
 </style>
 <template>
@@ -193,17 +203,18 @@
     <view class="modalDlg" wx:if="{{showModal}}">
       <view class="join-con" wx:if="{{isJoin}}">
           <text class="modal-text">请输入加入码</text>
-          <input class="code-input" value="{{joinCode}}"/>
+          <input class="code-input" value="{{joinCode}}" @input="codeInput"/>
           <view class="button-con">
             <view @tap="close" class="code-button">取消</view>
             <view @tap="goToRoom" class="code-button sure-button">确定</view>
           </view>
         </view>
         <view class="room-list-con" wx:if="{{!isJoin}}">
+          <view wx:if="{{!hasRoom}}" class="no-room">暂无房间</view>
           <view class="room-con" wx:for="{{roomList}}" wx:key="{{index}}" @tap="goToRoom">
-            <view class="room-name room-info">{{item.name}}</view>
-            <view class="room-intro room-info">{{item.intro}}</view>
-            <view class="room-peoplenum room-info">{{item.peoplenum}}人</view>
+            <view class="room-name room-info">{{item.roomName}}</view>
+            <view class="room-intro room-info">{{item.description}}</view>
+            <view class="room-peoplenum room-info">{{item.number}}人</view>
             <view class="arrow-icon"><image src="../images/choose_arrow.png" alt="点击箭头" class="choose-arrow"/></view>
           </view>
         </view>
@@ -233,6 +244,7 @@
     };
 
     data = {
+      hasRoom: false,
       cardList: [
         {
           name: '创建自习室',
@@ -254,36 +266,36 @@
         },
       ],
       roomList:[
-        {
-          name: "自习室名称",
-          intro: "自习室简介自习室简介自习室简介",
-          peoplenum: 22
-        },
-        {
-          name: "自习室名称",
-          intro: "自习室简介自习室简介自习室简介",
-          peoplenum: 22
-        },
-        {
-          name: "自习室名称",
-          intro: "自习室简介自习室简介自习室简介",
-          peoplenum: 22
-        },
-        {
-          name: "自习室名称",
-          intro: "自习室简介自习室简介自习室简介",
-          peoplenum: 22
-        },
-        {
-          name: "自习室名称",
-          intro: "自习室简介自习室简介自习室简介",
-          peoplenum: 22
-        },
-        {
-          name: "自习室名称",
-          intro: "自习室简介自习室简介自习室简介",
-          peoplenum: 22
-        }
+      //   {
+      //     name: "自习室名称",
+      //     intro: "自习室简介自习室简介自习室简介",
+      //     peoplenum: 22
+      //   },
+      //   {
+      //     name: "自习室名称",
+      //     intro: "自习室简介自习室简介自习室简介",
+      //     peoplenum: 22
+      //   },
+      //   {
+      //     name: "自习室名称",
+      //     intro: "自习室简介自习室简介自习室简介",
+      //     peoplenum: 22
+      //   },
+      //   {
+      //     name: "自习室名称",
+      //     intro: "自习室简介自习室简介自习室简介",
+      //     peoplenum: 22
+      //   },
+      //   {
+      //     name: "自习室名称",
+      //     intro: "自习室简介自习室简介自习室简介",
+      //     peoplenum: 22
+      //   },
+      //   {
+      //     name: "自习室名称",
+      //     intro: "自习室简介自习室简介自习室简介",
+      //     peoplenum: 22
+      //   }
       ],
       showModal: false,
       joinCode: "",
@@ -293,23 +305,11 @@
     computed = {};
 
     onReady() {
-   
-
-          
-
-      // // 可以通过 wx.getSetting 先查询一下用户是否授权了 "scope.record" 这个 scope
-      //        wx.getLocation({
-      // type: 'wgs84',
-      // success (res) {
-      //   const lat = res.latitude
-      //   const lng = res.longitude
-      //   console.log(lat,lng)
-      // }
-      // })
 
     }
 
     onShow(){
+
     }
 
     onLoad(){
@@ -318,21 +318,66 @@
 
     methods = {
       go(e) {
+        let that = this;
         console.log(RequestService)
-        if(RequestService.hasLogin){
+        if(!RequestService.noLogin){
           if(e.currentTarget.dataset.classify.id == 1){
             wx.showTabBar();
             wepy.navigateTo({
               url: '/pages/create'
             })
           }else if(e.currentTarget.dataset.classify.id == 2){
-            this.showModal = true;
-            this.isJoin = true;
+            that.showModal = true;
+            that.isJoin = true;
             wx.hideTabBar();
           }else if(e.currentTarget.dataset.classify.id == 3) {
-            this.showModal = true;
-            this.isJoin = false;
-            wx.hideTabBar();
+
+            // 可以通过 wx.getSetting 先查询一下用户是否授权了 "scope.record" 这个 scope
+            wx.getLocation({
+            type: 'wgs84',
+            success (res) {
+              let data = {
+                lat: res.latitude,
+                lng: res.longitude
+              }
+              RequestService.soeRequest('POST', data, '/room/find',
+                (fail) => {
+                  console.log(fail);
+                },
+                (res) => {
+                  if(res.code == 1 || res.code == "1"){
+                    console.log("成功数据",res);
+                    that.roomList = res.data;
+                      that.showModal = true;
+                      that.isJoin = false;
+                    if(!res.data.length){
+                      that.hasRoom = false;
+                    }else{
+                      that.hasRoom = true;
+                    }
+                    that.$apply();
+
+                    wx.hideTabBar();
+                  }else {
+                    wx.showToast({
+                      title: res.message,
+                      icon: "none",   
+                      duration: 2000, 
+                    })
+                  }
+              })
+            },
+            fail(err){
+              //判断是否获得了用户地理位置授权
+              wx.getSetting({
+                success: (res) => {
+                  if (!res.authSetting['scope.userLocation'])
+                    that.openConfirm()
+                }
+              })
+            }
+          })
+           
           }
         }else{
           wx.showModal({
@@ -354,13 +399,53 @@
         this.showModal = false;
          wx.showTabBar();
       },
+      codeInput(e){
+        console.log(e)
+        this.joinCode = e.detail.value;
+      },
       goToRoom(id){
-        wx.showTabBar();
-        this.showModal = false;
-        wepy.navigateTo({
-          url: '/pages/roomspace'
-        });
+        let that = this;
+         RequestService.soeRequest('POST', {id: this.joinCode}, '/room/join',
+            (fail) => {
+              console.log(fail);
+            },
+            (res) => {
+              if(res.code == 1 || res.code == "1"){
+                console.log("成功数据",res);
+                wx.showTabBar();
+                that.showModal = false;
+                wepy.navigateTo({
+                  url: `/pages/roomspace?id=${that.joinCode}`
+                });
+              }else {
+                wx.showToast({
+                  title: res.message,
+                  icon: "none",   
+                  duration: 2000, 
+                })
+              }
+          })
       }
+    }
+
+    openConfirm() {
+      wx.showModal({
+        content: '检测到您没打开定位权限，是否去设置打开？',
+        confirmText: "确认",
+        cancelText: "取消",
+        success: function (res) {
+          console.log(res);
+          //点击“确认”时打开设置页面
+          if (res.confirm) {
+            console.log('用户点击确认')
+            wx.openSetting({
+              success: (res) => { }
+            })
+          } else {
+            console.log('用户点击取消')
+          }
+        }
+      });
     }
   }
   ;

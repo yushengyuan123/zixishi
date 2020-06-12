@@ -61,29 +61,23 @@
   <view class="create-container">
     <view class="title">创建自习室</view>
     <view class="input-con">
-      <view
-        id="label"
-        animation="{{inputList.animation_name}}"
-      >自习室名称
-      </view>
+      <view id="label" animation="{{inputList.animation_name}}">自习室名称</view>
       <input
         type="text"
-        bindinput="change"
+        value="{{roomName}}"
+        bindinput="changeName"
         @focus="highLight(1)"
         @blur="recover(1)"
         style="{{choose === 1 ?'border: 1px solid #64C8BC' : 'border:1px solid rgba(225,228,232,1);'}}"
       >
     </view>
     <view class="input-con">
-      <view
-        id="label"
-        animation="{{inputList.animation_introduce}}"
-      >自习室简介
-      </view>
+      <view id="label" animation="{{inputList.animation_introduce}}">自习室简介</view>
       <input
         type="text"
-        value="{{values.introduce}}"
-        data-modal='values.introduce'
+        bindinput="changeDes"
+        value="{{description}}"
+        data-modal="description"
         @focus="highLight(2)"
         @blur="recover(2)"
         style="{{choose === 2 ? 'border: 1px solid #64C8BC' : 'border:1px solid rgba(225,228,232,1);'}}"
@@ -94,97 +88,155 @@
 </template>
 
 <script>
-    import wepy from 'wepy';
-    import { RequestService } from '../utils/shared/request';
+import wepy from 'wepy';
+import { RequestService } from '../utils/shared/request';
 
-    export default class navigator extends wepy.page {
-        components = {};
+export default class navigator extends wepy.page {
+  components = {};
 
-        mixins = [];
+  mixins = [];
 
-        watch = {};
+  watch = {};
 
-        events = {};
+  events = {};
 
-        data = {
-            inputList: {
-                animation_name: null,
-                animation_introduce: null
-            },
-            name:'',
-            values: {
-                name: '',
-                introduce: ''
-            },
-            choose: null
-        };
+  data = {
+    inputList: {
+      animation_name: null,
+      animation_introduce: null
+    },
+    name: '',
+    description: "",
+    roomName: "",
+    choose: null
+  };
 
-        computed = {};
+  computed = {};
 
-        onReady() {
+  onReady() {}
 
+  methods = {
+    changeName(e) {
+      this.roomName = e.detail.value
+    },
+    changeDes(e) {
+      this.description = e.detail.value
+    },
+    highLight(input) {
+      if (input == 1) {
+        this.choose = 1;
+        this.methods.transform.call(this, 'name');
+      } else {
+        this.choose = 2;
+        this.methods.transform.call(this);
+      }
+    },
+
+    recover(input) {
+      if (input == 1) {
+        this.choose = null;
+        console.log(this.name);
+        console.log(this.introduce);
+        if (!!!this.roomName) {
+          this.methods.leave.call(this, 'name');
         }
+      } else {
+        if (!!!this.description) {
+          this.methods.leave.call(this);
+        }
+      }
+    },
 
-        methods = {
-            change(value) {
-              console.log(value.detail.value)
-            },
-            highLight(input) {
-                if (input == 1) {
-                    this.choose = 1
-                    this.methods.transform.call(this, 'name')
-                } else {
-                    this.choose = 2
-                    this.methods.transform.call(this)
-                }
-            },
+    transform(which) {
+      if (which === 'name') {
+        this.inputList.animation_name = wx.createAnimation({
+          duration: 100
+        });
+        this.inputList.animation_name.translate(-15, -23).step();
+      } else {
+        this.inputList.animation_introduce = wx.createAnimation({
+          duration: 100
+        });
+        this.inputList.animation_introduce.translate(-15, -23).step();
+      }
+    },
 
-            recover(input) {
-                if (input == 1) {
-                    this.choose = null
-                    console.log(this.name)
-                    if (!!!this.values.name) {
-                        this.methods.leave.call(this, 'name')
-                    }
-                } else {
-                    if (!!!this.values.introduce) {
-                        this.methods.leave.call(this)
-                    }
-                }
+    leave(which) {
+      if (which === 'name') {
+        this.inputList.animation_name = wx.createAnimation({
+          duration: 100
+        });
+        this.inputList.animation_name.translate(0, 0).step();
+      } else {
+        this.inputList.animation_introduce = wx.createAnimation({
+          duration: 100
+        });
+        this.inputList.animation_introduce.translate(0, 0).step();
+      }
+    },
+    createRoom() {
+      let that = this;
+       // 可以通过 wx.getSetting 先查询一下用户是否授权了 "scope.record" 这个 scope
+        wx.getLocation({
+        type: 'wgs84',
+        success (res) {
+          let data = {
+            description: that.description,
+            roomName: that.roomName,
+            lat: res.latitude,
+            lng: res.longitude
+          }
+          RequestService.soeRequest(
+            'POST',
+            data,
+            '/room/create',
+            fail => {
+              console.log(fail);
+              wx.showToast({
+                title: '失败了...(ಥ_ಥ)',
+                icon: 'none',
+                duration: 2000
+              });
             },
-
-            transform(which) {
-                if (which === 'name') {
-                    this.inputList.animation_name = wx.createAnimation({
-                        duration: 100
-                    })
-                    this.inputList.animation_name.translate(-15, -23).step()
-                } else {
-                    this.inputList.animation_introduce = wx.createAnimation({
-                        duration: 100
-                    })
-                    this.inputList.animation_introduce.translate(-15, -23).step()
-                }
-            },
-
-            leave(which) {
-                if (which === 'name') {
-                    this.inputList.animation_name = wx.createAnimation({
-                        duration: 100
-                    })
-                    this.inputList.animation_name.translate(0, 0).step()
-                } else {
-                    this.inputList.animation_introduce = wx.createAnimation({
-                        duration: 100
-                    })
-                    this.inputList.animation_introduce.translate(0, 0).step()
-                }
-            },
-            createRoom(){
+            res => {
+              console.log('成功数据', res);
               wepy.navigateTo({
-                url: "/pages/roomspace"
-              })
+                url: `/pages/roomspace?id=${res.data}`
+              });
             }
-        };
-    };
+          );
+        },
+        fail(err){
+          //判断是否获得了用户地理位置授权
+          wx.getSetting({
+            success: (res) => {
+              if (!res.authSetting['scope.userLocation'])
+                that.openConfirm()
+            }
+          })
+        }
+      })
+    }
+  };
+
+  openConfirm() {
+    wx.showModal({
+      content: '检测到您没打开定位权限，是否去设置打开？',
+      confirmText: "确认",
+      cancelText: "取消",
+      success: function (res) {
+        console.log(res);
+        //点击“确认”时打开设置页面
+        if (res.confirm) {
+          console.log('用户点击确认')
+          wx.openSetting({
+            success: (res) => { }
+          })
+        } else {
+          console.log('用户点击取消')
+        }
+      }
+    });
+  }
+}
 </script>

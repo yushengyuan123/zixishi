@@ -1,11 +1,12 @@
 import wepy from 'wepy'
 
-export const baseUrl = 'https://qgailab.com:9998/api/bookstore';
+export const baseUrl = 'https://qgflower.qgailab.com:9998/api/bookstore';
 
 /**wx.request服务封装 */
 export class RequestService {
 
-  static hasLogin = false;
+  static noLogin = true;
+  static signature = "";
 
   /**
    * create by wq
@@ -59,7 +60,7 @@ export class RequestService {
    *sucFn 请求成功，执行该函数
    */
   static soeRequest(method, reqData, reqUrl, failFn, sucFn) {
-    if (!this.hasLogin) {
+    if (this.noLogin) {
       wx.showModal({
         title: '提示',
         content: '你还没有登录噢！',
@@ -75,7 +76,6 @@ export class RequestService {
       })
     }
 
-    console.log(wx.getStorageSync("Authorization"))
     wepy.request({
       /**header 如果需要验证token 可封装另外的getHeaders函数获取本地缓存token */
       // header: this.getHeaders(),
@@ -118,7 +118,9 @@ export class RequestService {
               wx.getUserInfo({
                 success: function (res) {
                   console.log(res, "授权信息")
-                  that.hasLogin = true;
+                  console.log(wepy.$instance, "这是wepy")
+                  wx.setStorageSync("noLogin", false);
+                  that.noLogin = false;
                   let data = {
                     code: code,
                     icon: res.userInfo.avatarUrl,
@@ -131,15 +133,21 @@ export class RequestService {
                     },
                     (res) => {
                       console.log(res);
+                      // that.signature = res.data.data.signature;
+                      // wepy.$instance.globalData.signature = res.data.data.signature;
+                      wx.setStorageSync('signature', res.data.data.signature);
                       let Authorization = res.cookies[0].split(";")[0];
                       console.log(Authorization)
                       // 写入token
                       wx.setStorageSync('Authorization', Authorization);
+                      wx.setStorageSync('location', Authorization);
+                      wx.setStorageSync('head', res.data.data.icon);
                     })
                 }
               })
             } else {
-              that.hasLogin = false;
+              wx.setStorageSync("noLogin", true);
+              that.noLogin = true;
               wx.showModal({
                 title: '提示',
                 content: '你还没有登录噢！',
@@ -177,7 +185,8 @@ export class RequestService {
           icon: icon,
           nickName: nickName
         }
-        that.hasLogin = true;
+        wx.setStorageSync("noLogin", false);
+        that.noLogin = false;
         that.soeRequest('POST', data, '/user/login',
           (fail) => {
             console.log(fail);
@@ -187,13 +196,15 @@ export class RequestService {
             console.log(res);
             wx.showToast({
               title: '登陆成功啦~',
-              icon: "success",
-              duration: 2000,
+              icon: "success",   
+              duration: 2000, 
             })
             let Authorization = res.cookies[0].split(";")[0];
             console.log(Authorization)
             // 写入token
             wx.setStorageSync('Authorization', Authorization);
+            wx.setStorageSync('signature', res.data.data.signature);
+            wx.setStorageSync('head', icon);
           })
       },
       fail: function () {

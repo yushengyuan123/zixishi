@@ -38,15 +38,16 @@
 <template>
   <view class="change-con">
     <view class="title">
-      修改{{mode}}
+      修改签名
     </view>
     <view class="save-button" @tap="save">保存</view>
-    <input class="change-input" />
+    <input class="change-input" value="{{signature}}" @input="changeSig"/>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy';
+  import { RequestService } from '../../utils/shared/request';
 
   export default class changeInfo extends wepy.page {
     components = {};
@@ -58,33 +59,59 @@
     events = {};
 
     data = {
-      mode: ""
+      signature: ""
     };
 
     computed = {};
 
     onLoad(option) {
       console.log(option)
-      this.mode = option.mode;
+      this.signature = option.signature;
     }
 
     methods = {
       save(){
+        let that = this;
         wx.showModal({
           title: '提示',
           content: '确定保存吗٩(๑>◡<๑)۶',
           success: function(res) {
             if (res.confirm) {
-              if(this.mode == "昵称"){
-
-              }else if(this.mode == "签名"){
-                
-              }
+              let data = {
+              signature: that.signature
+            }
+            RequestService.soeRequest('POST', data, '/user/updateSignature',
+              (fail) => {
+                console.log(fail);
+                wx.showToast({
+                  title: '失败了...(ಥ_ಥ)',
+                  icon: "none",   
+                  duration: 2000, 
+                })
+              },
+              (res) => {
+                console.log( "成功数据", res);
+                wx.setStorageSync('signature', that.signature);
+                wx.showToast({
+                  title: '成功改好啦~',
+                  icon: "success",   
+                  duration: 2000, 
+                })
+                setTimeout(() => {
+                  wx.navigateBack({
+                    delta: 2,
+                  });
+                }, 1000);
+              })
             } else if (res.cancel) {
             console.log('用户点击取消')
             }
           }
         })
+      },
+      changeSig(e){
+        console.log(e);
+        this.signature = e.detail.value;
       }
     };
   }
