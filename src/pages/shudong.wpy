@@ -126,7 +126,7 @@
             capture-catch:touchstart="touchStart"
             capture-catch:touchend="touchEnd"
           >
-            <image src="../images/tree.png" class="bg"></image>
+            <image src="../images/tree.png" class="bg"/>
             <view>
               <image src="../images/shudong_card.png" alt="1"/>
             </view>

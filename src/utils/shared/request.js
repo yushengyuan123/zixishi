@@ -220,6 +220,7 @@ export class RequestService {
             console.log(Authorization)
             // 写入token
             wx.setStorageSync('Authorization', Authorization);
+            console.log(res.data.data.signature)
             wx.setStorageSync('signature', res.data.data.signature);
             wx.setStorageSync('head', icon);
           })
