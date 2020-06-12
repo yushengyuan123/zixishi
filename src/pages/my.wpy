@@ -27,12 +27,34 @@
     line-height: 50px;
     font-size: 0;
 
+    .item-content {
+      @include inline;
+      padding-right: 28px;
+      color: rgba(77, 77, 77, 0.918);
+      font: {
+        size: 16px;
+      };
+      text-align: right;
+      height: 100%;
+      width: calc(80% - 28px);
+    }
+
+    .user-icon {
+      display: block;
+      float: right;
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+      background-color: #64C8BC;
+      overflow: hidden;
+    }
+
     image {
       display: block;
       float: right;
-      height: 30 rpx;
-      width: 30 rpx;
-      margin-right: 28px;
+      height: rpx(30);
+      width: rpx(30);
+      margin-right: 35px;
       margin-top: 20px;
     }
 
@@ -45,29 +67,8 @@
       font: {
         size: 16px;
       }
-
-      .item-content {
-        @include inline;
-        padding-right: 28px;
-        color: rgba(77, 77, 77, 0.918);
-        font: {
-          size: 16px;
-        };
-        text-align: right;
-        height: 100%;
-        width: calc(80% - 28px);
-      }
-
-      .user-icon {
-        display: block;
-        float: right;
-        height: 50px;
-        width: 50px;
-        border-radius: 50%;
-        background-color: #64C8BC;
-        overflow: hidden;
-      }
     }
+  }
 
     .login-btn {
       width: 200px;
@@ -104,9 +105,9 @@
         <view class="item-content">{{signature}}</view>
       </view>
 
-      <view class="my-info" @tap="mangerTree">
+      <view class="my-info" @tap="mangerTree" wx:if="{{!noLogin}}">
         <view class="item-title">我的树洞</view>
-        <image src="../images/direction.png"></image>
+        <image src="../images/direction.png"/>
       </view>
 
       <view class="my-info" wx:if="{{noLogin}}">
@@ -167,6 +168,7 @@
         });
       },
       bindGetUserInfo(e) {
+        let that = this;
         console.log(e.detail.userInfo);
         RequestService.firstLogin(
           e.detail.userInfo.avatarUrl,
@@ -175,10 +177,10 @@
         this.noLogin = false;
         this.signature = wx.getStorageSync('signature');
         setTimeout(() => {
-          this.noLogin = false;
-          this.signature = wx.getStorageSync('signature') ? wx.getStorageSync('signature') : "用户很懒，什么也没留下";
-          this.$apply();
-        }, 2000);
+          that.noLogin = false;
+          that.signature = wx.getStorageSync('signature') ? wx.getStorageSync('signature') : "用户很懒，什么也没留下";
+          that.$apply();
+        },2000);
 
       },
 

@@ -175,7 +175,7 @@
         },
         (res) => {
           const temp = []
-          for (let len = res.data.length, i = len; i > len - 10; i--) {
+          for (let len = res.data.length-1, i = len; i > len - 10; i--) {
             temp.push(res.data[i])
           }
           this.setData({
