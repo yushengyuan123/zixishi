@@ -17,6 +17,7 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
+      'pages/mangerTree/mangerTree',
       'pages/statistic',
       'pages/my',
       'pages/paper/paper',
