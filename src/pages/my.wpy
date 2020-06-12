@@ -30,8 +30,8 @@
     image {
       display: block;
       float: right;
-      height: 30 rpx;
-      width: 30 rpx;
+      height: rpx(30);
+      width: rpx(30);
       margin-right: 28px;
       margin-top: 20px;
     }

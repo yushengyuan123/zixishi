@@ -2,6 +2,7 @@
   @import "../utils/css/shareCss";
 
   .statistic-con {
+    min-height: 100vh;
     background: rgba(245, 245, 245, 1);
     padding-bottom: rpx(100);
   }

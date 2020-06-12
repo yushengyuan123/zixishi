@@ -24,8 +24,6 @@ export default class extends wepy.app {
       'pages/paper/paper',
       'pages/create',
       'pages/roomspace',
-      'pages/create/createzixishi',
-      'pages/room/roomspace',
       'pages/changeInfo/changeInfo'
     ],
     window: {

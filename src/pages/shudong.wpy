@@ -3,10 +3,11 @@
 
   .shudong-con {
     width: 100%;
-    // height: 100vh;
+    max-height: 100vh;
     background-image: url('https://s1.ax1x.com/2020/05/15/YrNmRA.png');
     background-attachment: fixed;
     background-size: cover;
+    overflow: hidden;
   }
 
   .title {
@@ -16,7 +17,7 @@
 
   .bottom-con {
     position: relative;
-    min-height: 90vh;
+    min-height: calc(100vh - 72rpx);
     padding: 30px 0;
   }
 
@@ -175,7 +176,7 @@
         },
         (res) => {
           const temp = []
-          for (let len = res.data.length, i = len; i > len - 10; i--) {
+          for (let len = res.data.length - 1, i = len; i > len - 10; i--) {
             temp.push(res.data[i])
           }
           this.setData({
