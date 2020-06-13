@@ -118,7 +118,7 @@ export class RequestService {
         }else {
           wepy.showToast({
             title: res.data.message,
-            icon: 'loading',
+            icon: 'none',
             duration: 2000
           })
         }
@@ -223,8 +223,8 @@ export class RequestService {
             console.log(res);
             wx.showToast({
               title: '登陆成功啦~',
-              icon: "success",   
-              duration: 2000, 
+              icon: "success",
+              duration: 2000,
             })
             let Authorization = res.cookies[0].split(";")[0];
             console.log(Authorization)
