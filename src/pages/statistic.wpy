@@ -214,7 +214,8 @@
 
     computed = {};
 
-    onLoad() {
+    onShow() {
+      console.log('刷新数据')
       this.initDate()
     }
 
