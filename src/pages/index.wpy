@@ -211,7 +211,7 @@
         </view>
         <view class="room-list-con" wx:if="{{!isJoin}}">
           <view wx:if="{{!hasRoom}}" class="no-room">暂无房间</view>
-          <view class="room-con" wx:for="{{roomList}}" wx:key="{{index}}" @tap="goToRoom">
+          <view class="room-con" wx:for="{{roomList}}" wx:key="{{index}}" data-classify="{{item}}" @tap="goToRoom">
             <view class="room-name room-info">{{item.roomName}}</view>
             <view class="room-intro room-info">{{item.description}}</view>
             <view class="room-peoplenum room-info">{{item.number}}人</view>
@@ -340,13 +340,14 @@
                 lat: res.latitude,
                 lng: res.longitude
               }
+              console.log("查找房间传过去的数据", data)
               RequestService.soeRequest('POST', data, '/room/find',
                 (fail) => {
                   console.log(fail);
                 },
                 (res) => {
                   if(res.code == 1 || res.code == "1"){
-                    console.log("成功数据",res);
+                    console.log("查找房间成功数据",res);
                     that.roomList = res.data;
                       that.showModal = true;
                       that.isJoin = false;
@@ -403,9 +404,16 @@
         console.log(e)
         this.joinCode = e.detail.value;
       },
-      goToRoom(id){
+      goToRoom(e){
+        console.log(e,"www")
         let that = this;
-         RequestService.soeRequest('POST', {id: this.joinCode}, '/room/join',
+        let roomId;
+        if(this.isJoin){
+          roomId = this.joinCode;
+        }else {
+          roomId = e.currentTarget.dataset.classify.id;
+        }
+         RequestService.soeRequest('POST', {id: roomId}, '/room/join',
             (fail) => {
               console.log(fail);
             },

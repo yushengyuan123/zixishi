@@ -197,6 +197,7 @@ export default class navigator extends wepy.page {
             lat: res.latitude,
             lng: res.longitude
           }
+          console.log("创建房间传过去的数据", data)
           RequestService.soeRequest(
             'POST',
             data,
@@ -210,7 +211,7 @@ export default class navigator extends wepy.page {
               });
             },
             res => {
-              console.log('成功数据', res);
+              console.log('创建房间成功传来数据', res);
               that.description = "";
               that.roomName = "";
               wx.redirectTo({

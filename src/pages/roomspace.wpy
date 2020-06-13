@@ -610,7 +610,7 @@
                 'headSrc': wx.getStorageSync("head")
               })
               
-              for(let i = 1; i < that.headImgList.length; i++){
+              for(let i = 0; i < that.headImgList.length; i++){
                 var temp_str= 'headImgList['+ i + '].url';
                 if(wx.getStorageSync("head") !== res.data[i]){
                   that.setData({
